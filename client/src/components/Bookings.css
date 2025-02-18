@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap");
 @import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css");
 @import "react-datepicker/dist/react-datepicker.css";
 
@@ -76,9 +76,9 @@
   color: #fff;
   font-size: 24px;
   margin-top: 8px;
-}
+} */
 /* Additional styles for the date picker */
-.date-picker {
+/* .date-picker {
   background-color: rgba(36, 37, 101, 1);
   color: #fff;
   border: 2px solid #fff;
@@ -87,11 +87,11 @@
   font-size: 16px;
   width: 100%;
   margin-top: 10px;
-}
+} */
 /* Keep your existing styles intact */
 
 /* Styles for input fields */
-.input-field {
+/* .input-field {
   background-color: rgba(36, 37, 101, 1);
   color: #fff;
   border: 2px solid #fff;
@@ -105,10 +105,10 @@
 .input-field:focus {
   outline: none;
   border-color: #3498db;
-}
+} */
 
 /* Style for the search button */
-.search-button {
+/* .search-button {
   background-color: #3498db;
   color: white;
   border: none;
@@ -165,4 +165,4 @@
   .chevron-icon {
     margin-top: 4px;
   }
-}
+} */

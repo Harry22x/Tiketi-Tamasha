@@ -1,172 +1,100 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap");
-@import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css");
-@import "react-datepicker/dist/react-datepicker.css";
+/* Navbar.css */
+:root {
+  --bg: #282c34; /* Background color */
+  --header: #fff;
+  --link: #61dafb;
+  --text: hsla(0, 0%, 100%, 0.88);
+  --primary: #f5167e;
+  --text-dark: #ffffff;
+}
 
-/* Main container styles */
-.search-box {
+.header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 76px;
   width: 100%;
-  max-width: 1086px;
-  margin: 0 auto;
-  padding: 20px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #f51e7e 0%, #3d37f1 100%); /* Matching the LandingPage gradient */
 }
 
-.search-container {
-  border-radius: 20px;
-  background-color: rgba(36, 37, 101, 1);
-  box-shadow: 0px 10px 50px rgba(61, 55, 241, 0.25);
-  width: 100%;
-  padding: 38px 48px;
+.logo-link {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
 }
 
-/* Search columns layout */
-.search-columns {
-  display: flex;
-  gap: 20px;
-  width: 100%;
+.logo-icon {
+  width: 34px;
+  height: 34px;
 }
 
-.search-column {
-  display: flex;
-  flex-direction: column;
-  width: 33%;
-  position: relative;
+.logo-text {
+  font-family: "Proxima Nova", sans-serif;
+  font-size: 29px;
+  color: var(--text-dark); /* Using the same color from LandingPage */
 }
 
-.column-content {
+.logo-text-bold {
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.logo-text-regular {
+  font-weight: 400;
+}
+
+.nav {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.nav-link {
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  color: var(--text-dark);
+  text-decoration: none;
+}
+
+.login-btn {
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  color: var(--text-dark);
+  padding: 10px 20px;
+  border: 1.5px solid var(--text-dark); /* Matching with the text color */
+  border-radius: 50px;
+  text-decoration: none;
+  color: var(--text-dark);
+}
+.sign-btn{
+  background-color: #f3f4f6;
+  padding: 0.75rem 1.55rem;
+  border-radius: 75rem;
+  font-weight: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  border: none;
+  font-size: 0.99rem;
+  text-decoration: none;
   font-family: "DM Sans", sans-serif;
 }
 
-.column-label {
-  color: #fff;
-  font-size: 16px;
-  font-weight: 400;
-  opacity: 0.7;
-  margin-bottom: 11px;
-}
-
-.column-value {
-  color: #fff;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-
-.column-separator {
-  border-top: 1px solid rgba(119, 120, 176, 1);
-  width: 100%;
-}
-
-/* Date selector styles */
-.date-selector {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-}
-
-.date-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.chevron-icon {
-  color: #fff;
-  font-size: 24px;
-  margin-top: 8px;
-}
-
-/* Date picker styles */
-.date-picker {
-  background-color: rgba(36, 37, 101, 1);
-  color: #fff;
-  border: 2px solid #fff;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 16px;
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* Input field styles */
-.input-field {
-  background-color: rgba(36, 37, 101, 1);
-  color: #fff;
-  border: 2px solid #fff;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 16px;
-  width: 100%;
-  margin-top: 10px;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: #3498db;
-}
-
-/* Search button styles */
-.search-button {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 20px;
-}
-
-.search-button:hover {
-  background-color: #2980b9;
-}
-
-/* Responsive styles */
+/* Additional responsive styling if needed for Navbar */
 @media (max-width: 991px) {
-  .search-container {
-    padding: 30px;
+  .header {
+    padding: 24px 20px;
   }
-
-  .search-columns {
-    gap: 15px;
+  .nav {
+    display: none; /* Hide the nav on smaller screens */
   }
 }
 
 @media (max-width: 640px) {
-  .search-container {
-    padding: 20px;
-  }
-
-  .search-columns {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .search-column {
-    width: 100%;
-  }
-
-  .column-label {
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-
-  .column-value {
-    font-size: 20px;
-    margin-bottom: 12px;
-  }
-
-  .column-separator {
-    margin: 12px 0;
-  }
-
-  .chevron-icon {
-    margin-top: 4px;
+  .header {
+    padding: 16px;
   }
 }

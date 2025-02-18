@@ -21,9 +21,6 @@ function Navbar() {
             Schedule
           </a>
           <a href="#" className="nav-link">
-            Speakers
-          </a>
-          <a href="#" className="nav-link">
             Ticket
           </a>
           <a href="#" className="nav-link">
@@ -31,6 +28,9 @@ function Navbar() {
           </a>
           <a href="#" className="login-btn">
             Login
+          </a>
+          <a href="#" className="sign-btn">
+            Sign Up
           </a>
         </nav>
       </header>
