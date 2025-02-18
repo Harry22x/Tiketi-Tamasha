@@ -1,5 +1,7 @@
 import React from "react";
 import './LandingPage.css'
+import UpcomingEvents from "./UpcomingEvents";
+import AddTicket from "./AddTicket";
 export default function LandingPage() {
   return (
     <div className="landing-container">
@@ -27,6 +29,8 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
+      <UpcomingEvents />
+      <AddTicket />
     </div>
   );
 }
