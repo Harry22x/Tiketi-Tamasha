@@ -37,7 +37,7 @@ function EventPage() {
   );
 
   if (status === "pending") return <p className="loading">Loading...</p>;
-  if (status === "rejected") return <p className="error">Error: {error}</p>;
+  if (status === "rejected") return <p className="error">!Error: {error}</p>;
 
   return (
     <div className="event-container">
