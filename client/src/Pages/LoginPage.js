@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors }, setError } = useForm();
@@ -67,10 +68,11 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Sign Up Link */}
+        <Link to={`/signup`}>
         <p className="mt-4 text-center text-gray-600">
           Don't have an account? <a href="/signup" className="text-blue-500 hover:underline">Sign Up</a>
         </p>
+        </Link>
       </div>
     </div>
   );

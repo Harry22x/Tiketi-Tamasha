@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./index.css";
+import "../index.css";
+import { Link } from "react-router-dom";
 
 const SignupPage = () => {
   const [username, setUsername] = useState("");
@@ -31,7 +32,8 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
       {error && <p className="text-red-500">{error}</p>}
 
@@ -76,10 +78,12 @@ const SignupPage = () => {
           Sign Up
         </button>
       </form>
-
+      <Link to={`/login`}>
       <p className="mt-4">
         Already have an account? <a href="/" className="text-blue-600">Login</a>
       </p>
+      </Link>
+    </div>
     </div>
   );
 };
