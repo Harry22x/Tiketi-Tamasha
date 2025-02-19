@@ -1,11 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { auth, db, storage } from "./FireBase";
-import { updateProfile, updatePassword } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
-import { useNavigate } from "react-router-dom"; // React Router's useNavigate for navigation
-import './index.css'
+import { useNavigate } from "react-router-dom";
+import "./index.css";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState({ name: "", email: "", role: "", profilePic: "" });
@@ -14,44 +10,47 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const navigate = useNavigate(); // useNavigate from react-router-dom
+  const navigate = useNavigate();
 
+  // 🔹 Fetch user data from backend API
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!auth.currentUser) {
-        navigate("/login"); // Redirect to login if user is not logged in
-        return;
-      }
       try {
-        const userRef = doc(db, "users", auth.currentUser.uid);
-        const userSnap = await getDoc(userRef);
+        const response = await fetch("https://your-backend.com/api/user", {
+          method: "GET",
+          credentials: "include", // Send cookies for authentication
+        });
 
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          setUserData(data);
-          setNewName(data.name);
+        if (!response.ok) {
+          navigate("/login"); // Redirect if not authenticated
+          return;
         }
+
+        const data = await response.json();
+        setUserData(data);
+        setNewName(data.name);
       } catch (error) {
         console.error("Error fetching user data:", error.message);
       }
     };
 
     fetchUserData();
-  }, [navigate]); // Re-run useEffect if navigate changes
+  }, [navigate]);
 
+  // 🔹 Update profile (Name & Password)
   const handleUpdateProfile = async () => {
     setLoading(true);
     try {
-      if (newName !== userData.name) {
-        await updateProfile(auth.currentUser, { displayName: newName });
-        await updateDoc(doc(db, "users", auth.currentUser.uid), { name: newName });
-        setUserData((prev) => ({ ...prev, name: newName }));
-      }
+      const response = await fetch("https://your-backend.com/api/update-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name: newName, password: newPassword }),
+      });
 
-      if (newPassword.length > 0) {
-        await updatePassword(auth.currentUser, newPassword);
-      }
+      if (!response.ok) throw new Error("Failed to update profile.");
 
+      setUserData((prev) => ({ ...prev, name: newName }));
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("Profile Update Error:", error.message);
@@ -60,6 +59,7 @@ export default function ProfilePage() {
     setLoading(false);
   };
 
+  // 🔹 Upload Profile Picture
   const handleUploadImage = async () => {
     if (!imageFile) {
       alert("Please select an image.");
@@ -67,38 +67,29 @@ export default function ProfilePage() {
     }
 
     setUploading(true);
+    const formData = new FormData();
+    formData.append("profilePic", imageFile);
+
     try {
-      const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}`);
-      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+      const response = await fetch("https://your-backend.com/api/upload-profile-pic", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Optional: Add progress tracking here
-        },
-        (error) => {
-          console.error("Upload Error:", error.message);
-          alert("Image upload failed.");
-          setUploading(false);
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      if (!response.ok) throw new Error("Image upload failed.");
+      const { profilePic } = await response.json();
 
-          // Update Firestore with the new profile picture URL
-          await updateDoc(doc(db, "users", auth.currentUser.uid), { profilePic: downloadURL });
-          setUserData((prev) => ({ ...prev, profilePic: downloadURL }));
-
-          alert("Profile picture updated!");
-          setUploading(false);
-        }
-      );
+      setUserData((prev) => ({ ...prev, profilePic }));
+      alert("Profile picture updated!");
     } catch (error) {
       console.error("Image Upload Error:", error.message);
       alert("Failed to upload image.");
-      setUploading(false);
     }
+    setUploading(false);
   };
 
+  // 🔹 Remove Profile Picture
   const handleRemoveProfilePicture = async () => {
     if (!userData.profilePic) {
       alert("No profile picture to remove.");
@@ -110,15 +101,18 @@ export default function ProfilePage() {
     }
 
     try {
-      const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}`);
-      await deleteObject(storageRef);
-      await updateDoc(doc(db, "users", auth.currentUser.uid), { profilePic: "" });
+      const response = await fetch("https://your-backend.com/api/remove-profile-pic", {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error("Failed to remove profile picture.");
       setUserData((prev) => ({ ...prev, profilePic: "" }));
 
       alert("Profile picture removed successfully.");
     } catch (error) {
       console.error("Remove Picture Error:", error.message);
-      alert("Failed to remove profile picture: " + error.message);
+      alert("Failed to remove profile picture.");
     }
   };
 
@@ -182,8 +176,6 @@ export default function ProfilePage() {
         >
           {loading ? "Updating..." : "Save Changes"}
         </button>
-
-      
       </div>
     </div>
   );

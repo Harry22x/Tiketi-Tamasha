@@ -1,82 +1,50 @@
-import React, { useState } from "react";
-import {
-  auth,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  googleProvider,
-  signInWithPhoneNumber,
-  RecaptchaVerifier,
-} from "./FireBase"; // Ensure proper Firebase imports
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./index.css";
 
 const SignupPage = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState(""); // Error state
-  const [confirmationResult, setConfirmationResult] = useState(null); // For OTP verification
-  const [otp, setOtp] = useState(""); // OTP input
+  const [role, setRole] = useState("event-goer"); // Default role
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // 🔹 Email/Password Signup
+  // 🔹 Handle Signup via Backend API
   const handleSignup = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/profile"); // Redirect on success
-    } catch (err) {
-      if (err.code === "auth/email-already-in-use") {
-        setError("Email is already in use. Try logging in.");
-      } else {
-        setError(err.message);
-      }
-    }
-  };
-
-  // 🔹 Google Sign-In
-  const handleGoogleSignup = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate("/profile");
-    } catch (err) {
-      setError("Google Sign-In failed: " + err.message);
-    }
-  };
-
-  // 🔹 Phone Authentication (Send OTP)
-  const sendOTP = async () => {
-    try {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
+      const response = await fetch("https://your-backend.com/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password, role }),
       });
 
-      const confirmation = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
-      setConfirmationResult(confirmation);
-    } catch (err) {
-      setError("Failed to send OTP: " + err.message);
-    }
-  };
+      if (!response.ok) throw new Error("Signup failed. Try again.");
 
-  // 🔹 Verify OTP
-  const verifyOTP = async () => {
-    if (!confirmationResult) return setError("No OTP sent.");
-    try {
-      await confirmationResult.confirm(otp);
-      navigate("/profile");
+      navigate("/profile"); // Redirect on success
     } catch (err) {
-      setError("Invalid OTP: " + err.message);
+      setError(err.message);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
-      {error && <p className="text-red-500">{error}</p>} {/* Show error message */}
+      {error && <p className="text-red-500">{error}</p>}
 
-      {/* 🔹 Email/Password Form */}
+      {/* 🔹 Signup Form */}
       <form onSubmit={handleSignup} className="bg-white p-6 shadow-md rounded-lg">
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="mb-2 p-2 border rounded w-full"
+          required
+        />
         <input
           type="email"
           placeholder="Email"
@@ -93,48 +61,21 @@ const SignupPage = () => {
           className="mb-2 p-2 border rounded w-full"
           required
         />
+        
+        {/* 🔹 Role Selection */}
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="mb-2 p-2 border rounded w-full"
+        >
+          <option value="event-goer">Event Goer</option>
+          <option value="organizer">Organizer</option>
+        </select>
+
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded w-full">
           Sign Up
         </button>
       </form>
-
-      {/* 🔹 Google Sign-In */}
-      <button onClick={handleGoogleSignup} className="mt-4 bg-red-500 text-white px-4 py-2 rounded w-full">
-        Sign Up with Google
-      </button>
-
-      {/* 🔹 Phone Number Authentication */}
-      <div className="mt-4 w-full">
-        <input
-          type="text"
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
-        />
-        <button onClick={sendOTP} className="bg-green-500 text-white px-4 py-2 rounded w-full">
-          Send OTP
-        </button>
-
-        {/* OTP Verification */}
-        {confirmationResult && (
-          <div className="mt-2">
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="mb-2 p-2 border rounded b-full"
-            />
-            <button onClick={verifyOTP} className="bg-purple-500 text-white px-4 py-2 rounded w-full">
-              Verify OTP
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Recaptcha Container */}
-      <div id="recaptcha-container"></div>
 
       <p className="mt-4">
         Already have an account? <a href="/" className="text-blue-600">Login</a>

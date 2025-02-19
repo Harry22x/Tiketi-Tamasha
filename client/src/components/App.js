@@ -13,7 +13,8 @@ function App() {
         {/* Header */}
         <h1 className="text-5xl font-extrabold text-center mt-12 shadow-lg">EVENTICK</h1>
         {/* Navigation Bar */}
-        <nav className="mt-8 bg-white shadow-xl rounded-full px-6 py-3 w-11/12 max-w-2xl">
+        <nav className="mt-8 bg-white
+         shadow-xl rounded-full px-6 py-3 w-11/12 max-w-2xl">
           <ul className="flex justify-center space-x-6">
             {[
               { path: "/", label: "Login" },
@@ -39,7 +40,8 @@ function App() {
         </nav>
 
         {/* Route Definitions */}
-        <div className="mt-12 bg-white text-gray-800 rounded-xl shadow-xl w-11/12 max-w-lg p-8">
+        <div className="mt-12 bg-purple
+text-gray-800 rounded-xl shadow-xl w-11/12 max-w-lg p-8">
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
