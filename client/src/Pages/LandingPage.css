@@ -1,23 +1,21 @@
 @import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css");
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Proxima+Nova:wght@400;700;800&display=swap");
 
-:root {
+/* :root {
   --bg: #282c34;
   --header: #fff;
   --link: #61dafb;
   --text: hsla(0, 0%, 100%, 0.88);
   --primary: #f5167e;
   --text-dark: #ffffff;
-}
+} */
 
 .landing-container {
   width: 100%;
   min-height: 80vh;
-  background: linear-gradient(135deg, #f51e7e 0%, #3d37f1 100%);
+  background: linear-gradient(135deg, #000000 0%, #3d37f1 100%);
   
 }
-
-
 .main-content {
   display: flex;
   flex-direction: row;
@@ -27,6 +25,12 @@
   /* margin-top: px; */
   gap: 20px; /* Reduced gap between image and content */
   box-sizing: border-box;
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 80px;
 }
 
 .hero-image {
@@ -34,7 +38,7 @@
   max-width: 900px;
   height: auto;
   object-fit: cover;
-  border-radius: 20px;
+  box-shadow: 0 1000px 1000px rgba(5, 5, 5, 0.1);
 }
 
 .content-wrapper {
@@ -171,3 +175,5 @@
     width: 100%;
   }
 }
+
+

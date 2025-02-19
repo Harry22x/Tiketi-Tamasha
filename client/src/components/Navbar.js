@@ -12,8 +12,8 @@ function Navbar() {
             className="logo-icon"
           />
           <div className="logo-text">
-            <span className="logo-text-bold">Event</span>
-            <span className="logo-text-regular">ick</span>
+            <span className="logo-text-bold">Tiketi</span>
+            <span className="logo-text-regular">Tamasha</span>
           </div>
         </a>
         <nav className="nav">
