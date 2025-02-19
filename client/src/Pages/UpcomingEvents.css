@@ -90,7 +90,38 @@ h2 {
   background-color: #e5e7eb;
   transform: scale(1.05);
 }
+.relative {
+  position: relative;
+}
 
+/* Dropdown menu */
+.absolute {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  width: max-content;
+  min-width: 120px;
+  padding: 8px 0;
+}
+
+/* Dropdown links */
+.absolute a {
+  display: block;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: "DM Sans", sans-serif;
+
+}
+
+.absolute a:hover {
+  background-color: #f1f1f1;
+}
 .arrow {
   margin-left: 0.5rem;
 }

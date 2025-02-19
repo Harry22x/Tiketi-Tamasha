@@ -1,9 +1,10 @@
 import React from 'react'
 import './Navbar.css'
+
 function Navbar() {
   return (
     <>
-    <header className="header">
+      <header className="header">
         <a href="#" className="logo-link">
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/f0d53468f8408c53aa2c9f2d0a86e6331b6609ac6744dc41946929048f6b8408?placeholderIfAbsent=true"
@@ -20,12 +21,10 @@ function Navbar() {
           <a href="#" className="nav-link">
             Schedule
           </a>
-          <a href="#" className="nav-link">
-            Ticket
-          </a>
-          <a href="#" className="nav-link">
+          <a href="#footer" className="nav-link">
             Contact
           </a>
+          
           <a href="#" className="login-btn">
             Login
           </a>
@@ -34,7 +33,6 @@ function Navbar() {
           </a>
         </nav>
       </header>
-
     </>
   )
 }
