@@ -72,7 +72,7 @@ function EventPage() {
           <p className="total-tickets">Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}</p>
           <p className="total-price">Total: {totalAmount.toLocaleString()} KES</p>
           <button className="purchase-button">Purchase tickets</button>
-          <img className="event-image"src={event.image}/>
+          <img className="event-image" src={event.image}></img>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ const routes = [
     children: [
       { path: "/", element: <LandingPage /> },
       { path: "/add-ticket", element: <AddTicket /> },
-    {path:"/events/:id", element: <EventPage/>}
+      {path:"/events/:id", element: <EventPage/>}
       
     ],
   },
