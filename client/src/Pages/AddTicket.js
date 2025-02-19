@@ -17,7 +17,7 @@ function AddTicket() {
             <div className="content-wrapper">
               <h1 className="main-heading">Make your own Event</h1>
               <p className="description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Have an idea for an amazing event? Whether it's a music concert, a workshop, or a social gathering, you can create and manage your own event effortlessly. Set the details, share with your audience, and make it an experience to remember. Start planning today!
               </p>
               <button className="create-button">Create Events</button>
             </div>
