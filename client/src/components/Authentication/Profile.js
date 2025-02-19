@@ -5,7 +5,7 @@ import { updateProfile, updatePassword } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { useNavigate } from "react-router-dom"; // React Router's useNavigate for navigation
-import LogoutButton from "./LogoutPage";
+import './index.css'
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState({ name: "", email: "", role: "", profilePic: "" });
@@ -183,9 +183,7 @@ export default function ProfilePage() {
           {loading ? "Updating..." : "Save Changes"}
         </button>
 
-        <div className="mt-4 text-center">
-          <LogoutButton />
-        </div>
+      
       </div>
     </div>
   );
