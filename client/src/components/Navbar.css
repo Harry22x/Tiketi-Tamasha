@@ -9,14 +9,19 @@
 }
 
 .header {
+  position: fixed; /* Keeps the navbar fixed at the top */
+  top: 0; /* Sticks to the very top */
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensures it stays above other elements */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 76px;
-  width: 100%;
+  padding: 12px 50px; /* Reduce padding to make it smaller */
   box-sizing: border-box;
-  background: linear-gradient(135deg, #f51e7e 0%, #3d37f1 100%); /* Matching the LandingPage gradient */
+  background: linear-gradient(135deg, #000000 0%, #0f0e3d 100%);
 }
+
 
 .logo-link {
   display: flex;

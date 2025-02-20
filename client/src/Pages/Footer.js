@@ -3,7 +3,7 @@ import "./Footer.css";
 
 const Footer = () => {
   return (
-    <footer className="footer">
+    <footer className="footer" id="footer">
       <div className="footer-main">
         <div className="footer-content">
           <div className="footer-brand">
@@ -14,12 +14,12 @@ const Footer = () => {
                 className="logo-image"
               />
               <div className="brand-name">
-                <span className="brand-name-bold">Event</span>
-                <span className="brand-name-regular">ick</span>
+                <span className="brand-name-bold">Tiketi</span>
+                <span className="brand-name-regular">Tamasha</span>
               </div>
             </div>
             <p className="brand-description">
-              Eventick is a global self-service ticketing platform for live
+              TiketiTamasha is a global self-service ticketing platform for live
               experiences that allows anyone to create, share, find and attend
               events that fuel their passions and enrich their lives.
             </p>
@@ -45,25 +45,13 @@ const Footer = () => {
           <div className="footer-nav-section">
             <div className="footer-nav">
               <div className="nav-column">
-                <h3 className="nav-title">Eventick</h3>
+                <h3 className="nav-title">TiketiTamasha</h3>
                 <nav className="nav-links">
                   <a href="#" className="nav-link">
                     About Us
                   </a>
                   <a href="#" className="nav-link">
-                    Press
-                  </a>
-                  <a href="#" className="nav-link">
                     Contact Us
-                  </a>
-                  <a href="#" className="nav-link">
-                    Help Center
-                  </a>
-                  <a href="#" className="nav-link">
-                    How it Works
-                  </a>
-                  <a href="#" className="nav-link">
-                    Privacy
                   </a>
                   <a href="#" className="nav-link">
                     Terms
@@ -83,15 +71,35 @@ const Footer = () => {
                     placeholder="Enter your email address.."
                     className="email-input"
                   />
-                  <button className="subscribe-button">Subscibe Now</button>
+                  <button className="subscribe-button">Subscribe Now</button>
                 </div>
               </div>
+            </div>
+
+            {/* Contact Component */}
+            <div className="contact-form">
+              <h3 className="nav-title">Contact Us</h3>
+              <input
+                type="email"
+                placeholder="Your Email"
+                className="contact-input"
+              />
+              <input
+                type="text"
+                placeholder="Your Phone Number"
+                className="contact-input"
+              />
+              <textarea
+                placeholder="Your Comment"
+                className="contact-textarea"
+              />
+              <button className="submit-button">Submit</button>
             </div>
           </div>
         </div>
 
         <div className="footer-divider" />
-        <div className="copyright">Copyright © 2022 Avi Yansah</div>
+        <div className="copyright">Copyright © 2022 TiketiTamasha</div>
       </div>
     </footer>
   );

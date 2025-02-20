@@ -2,28 +2,25 @@ import React from "react";
 import './LandingPage.css'
 import UpcomingEvents from "./UpcomingEvents";
 import AddTicket from "./AddTicket";
-import EventsImage from "../images/Events1.jpg"; // Import the image
+import image1 from '../images/image1.jpeg';
 export default function LandingPage() {
   return (
     <div className="landing-container">
       
       <main className="main-content">
       <img
-        src={EventsImage} // Use the imported image
+        src={image1} // Use the imported image
         alt="K-pop Group"
         loading="lazy"
         className="hero-image"
       />
         <div className="content-wrapper">
-          <h1 className="title">SBS MTV The Kpop Show Ticket Package</h1>
+          <h1 className="title">Unwind, Sip, and Vibe! </h1>
           <p className="description">
-            Look no further! Our SBS The Show tickets are the simplest way for
-            you to experience a live Kpop recording.
+          Immerse yourself in a chill atmosphere where smooth tunes meet your favorite drinks. Whether you're here for laid-back conversations or just soaking in the good vibes, this event is your perfect escape. Relax, connect, and make unforgettable memories!"
           </p>
           <div className="button-group">
-            <a href="#" className="primary-btn">
-              Get Ticket
-            </a>
+            
             <a href="#" className="secondary-btn">
               Learn More
             </a>

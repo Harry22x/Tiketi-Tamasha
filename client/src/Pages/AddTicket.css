@@ -11,7 +11,7 @@
 .create-events-container {
   border-radius: 0;
   max-width: 1200px;
-  padding-right: 50px;
+  padding-left: 200px;
 }
 
 .create-events-content {
@@ -37,7 +37,7 @@
   align-items: stretch;
   line-height: normal;
   width: 61%;
-  margin-left: 0;
+
 }
 
 .event-image {
@@ -72,11 +72,11 @@
   color: var(--text-black);
   font-weight: 700;
 }
-
 .main-heading {
   font-size: 34px;
   margin: 0;
   padding: 0;
+  color: #ffffff;
 }
 
 .description {
@@ -91,6 +91,7 @@
   background-color: var(--primary-pink);
   box-shadow: 0px 10px 50px var(--shadow-color);
   margin-top: 21px;
+  margin-bottom: 20px;
   width: 302px;
   max-width: 100%;
   padding: 19px 70px;

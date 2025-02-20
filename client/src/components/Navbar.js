@@ -29,13 +29,11 @@ function Navbar({setUser,user}) {
           <a href="#" className="nav-link">
             Schedule
           </a>
-          <a href="#" className="nav-link">
-            Ticket
-          </a>
-          <a href="#" className="nav-link">
+          <a href="#footer" className="nav-link">
             Contact
           </a>
           {user? (<button className="login-btn" onClick={handleLogoutClick}>Log out</button>):(         <Link to={`/login`}>
+          
           <a href="#" className="login-btn">
             Login
           </a></Link>)}
@@ -49,7 +47,6 @@ function Navbar({setUser,user}) {
 
         </nav>
       </header>
-
     </>
   )
 }

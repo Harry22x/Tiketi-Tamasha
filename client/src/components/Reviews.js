@@ -13,15 +13,8 @@ const Reviews = () => {
                 <span>saying about us?</span>
               </h2>
               <p className="reviews-subtitle">
-                <span>
-                  Discover how you can offset your adventure's carbon emissions
-                </span>
-                <br />
-                <span>
-                  and support the sustainable initiatives practiced by our
-                </span>
-                <br />
-                <span>operators worldwide.</span>
+          
+              See what our attendees have to say about their unforgettable event experiences! From star-studded concerts to exclusive meet-and-greets, our guests share their excitement and memories.
               </p>
             </div>
           </div>
@@ -36,8 +29,8 @@ const Reviews = () => {
                     className="reviewer-image"
                   />
                   <div className="reviewer-details">
-                    <h3 className="reviewer-name">Sara Mohamed</h3>
-                    <p className="reviewer-location">Jakatar</p>
+                    <h3 className="reviewer-name">Stacy Aleyo</h3>
+                    <p className="reviewer-location">Nairobi</p>
                   </div>
                 </div>
                 <div className="rating">
@@ -52,10 +45,7 @@ const Reviews = () => {
                 </div>
               </div>
               <p className="review-text">
-                I've been using the hotel booking system for several years now,
-                and it's become my go-to platform for planning my trips. The
-                interface is user-friendly, and I appreciate the detailed
-                information and real-time availability of hotels.
+              The energy was absolutely electric! Seeing my favorite celebrity live on stage was a dream come true. The performances were top-notch, and the atmosphere was filled with excitement from start to finish. Can’t wait for the next one!
               </p>
             </article>
 
@@ -68,18 +58,13 @@ const Reviews = () => {
                     className="reviewer-image"
                   />
                   <div className="reviewer-details">
-                    <h3 className="reviewer-name">Atend John</h3>
-                    <p className="reviewer-location">Califonia</p>
+                    <h3 className="reviewer-name">Manu Maina</h3>
+                    <p className="reviewer-location">Nakuru</p>
                   </div>
                 </div>
               </div>
               <p className="review-text">
-                I had a last-minute business trip, and the hotel booking system
-                came to the rescue. I was able to find a high-quality hotel in
-                no time and even got a great deal on the room. The confirmation
-                process was straightforward, and I received all the necessary
-                information promptly.
-              </p>
+See what our attendees have to say about their unforgettable event experiences! From star-studded concerts to exclusive meet-and-greets, our guests share their excitement and memories.              </p>
             </article>
             <article className="review-card review-card-secondary">
               <div className="review-header">
@@ -90,17 +75,13 @@ const Reviews = () => {
                     className="reviewer-image"
                   />
                   <div className="reviewer-details">
-                    <h3 className="reviewer-name">Atend John</h3>
-                    <p className="reviewer-location">Califonia</p>
+                    <h3 className="reviewer-name">Harry Porter</h3>
+                    <p className="reviewer-location">Nairobi</p>
                   </div>
                 </div>
               </div>
               <p className="review-text">
-                I had a last-minute business trip, and the hotel booking system
-                came to the rescue. I was able to find a high-quality hotel in
-                no time and even got a great deal on the room. The confirmation
-                process was straightforward, and I received all the necessary
-                information promptly.
+              The lineup was insane! Every performance kept us on our feet, and the production was out of this world. Lights, music, and pure entertainment – this was the best night ever!
               </p>
             </article>
           </div>
