@@ -1,7 +1,7 @@
 import React from 'react';
-import LandingPage from './Pages/LandingPage';  // Correct the import path
+ // Correct the import path
 import Navbar from './components/Navbar';
-import UpcomingEvents from './Pages/UpcomingEvents';
+
 import { Outlet } from 'react-router-dom';
 import Reviews from './components/Reviews';
 import Footer from './Pages/Footer';

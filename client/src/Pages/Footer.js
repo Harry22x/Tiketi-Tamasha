@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom"; // ✅ Use Link for navigation
 import "./Footer.css";
 
 const Footer = () => {
@@ -26,18 +27,21 @@ const Footer = () => {
             <div className="social-icons">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/3db0307f88bc863528f54d1a355b60d98840475ba331cb67c524e99fa6b18ac6"
-                alt="Social Media"
+                alt="Facebook"
                 className="social-icon"
+                aria-label="Visit our Facebook page"
               />
               <img
                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/75f2b8865665f49745e80c1b7fa2a466034006a8e29f787bf66c0d488b2181d9"
-                alt="Social Media"
+                alt="Twitter"
                 className="social-icon"
+                aria-label="Visit our Twitter page"
               />
               <img
                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/c9210d66eb2cbd340ffc8ce58e8051ba9e830e441b0355e4d5d6fbaa4cc0a9c8"
-                alt="Social Media"
+                alt="Instagram"
                 className="social-icon"
+                aria-label="Visit our Instagram page"
               />
             </div>
           </div>
@@ -47,43 +51,31 @@ const Footer = () => {
               <div className="nav-column">
                 <h3 className="nav-title">Eventick</h3>
                 <nav className="nav-links">
-                  <a href="#" className="nav-link">
-                    About Us
-                  </a>
-                  <a href="#" className="nav-link">
-                    Press
-                  </a>
-                  <a href="#" className="nav-link">
-                    Contact Us
-                  </a>
-                  <a href="#" className="nav-link">
-                    Help Center
-                  </a>
-                  <a href="#" className="nav-link">
-                    How it Works
-                  </a>
-                  <a href="#" className="nav-link">
-                    Privacy
-                  </a>
-                  <a href="#" className="nav-link">
-                    Terms
-                  </a>
+                  <Link to="/about-us" className="nav-link">About Us</Link>
+                  <Link to="/press" className="nav-link">Press</Link>
+                  <Link to="/contact" className="nav-link">Contact Us</Link>
+                  <Link to="/help" className="nav-link">Help Center</Link>
+                  <Link to="/how-it-works" className="nav-link">How it Works</Link>
+                  <Link to="/privacy" className="nav-link">Privacy</Link>
+                  <Link to="/terms" className="nav-link">Terms</Link>
                 </nav>
               </div>
 
               <div className="newsletter-column">
                 <h3 className="nav-title">Stay In The Loop</h3>
                 <p className="newsletter-description">
-                  Join our mailing list to stay in the loop with our newest for
-                  Event and concert
+                  Join our mailing list to stay in the loop with our newest events and concerts.
                 </p>
                 <div className="newsletter-form">
+                  <label htmlFor="email-input" className="sr-only">Email Address</label>
                   <input
                     type="email"
-                    placeholder="Enter your email address.."
+                    id="email-input"
+                    placeholder="Enter your email address..."
                     className="email-input"
+                    aria-label="Enter your email to subscribe"
                   />
-                  <button className="subscribe-button">Subscibe Now</button>
+                  <button className="subscribe-button">Subscribe Now</button>
                 </div>
               </div>
             </div>
@@ -91,7 +83,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-divider" />
-        <div className="copyright">Copyright © 2022 Avi Yansah</div>
+        <div className="copyright">Copyright © {new Date().getFullYear()} Avi Yansah</div>
       </div>
     </footer>
   );
