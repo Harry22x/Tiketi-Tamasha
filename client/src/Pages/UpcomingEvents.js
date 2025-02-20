@@ -22,7 +22,7 @@ const UpcomingEvents = () => {
   const [events,setEvents] = useState([])
 
   function fetchEvents(){
-    fetch('/events')
+    fetch('https://tiketi-tamashafrunt.onrender.com/events')
     .then(r=>r.json())
     .then(data=> setEvents(data))
 }

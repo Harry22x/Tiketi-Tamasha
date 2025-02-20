@@ -11,7 +11,7 @@ function App() {
 
   async function check_session() {
     try {
-      const response = await fetch("/check_session", {
+      const response = await fetch("https://tiketi-tamashafrunt.onrender.com/check_session", {
         method: "GET",
         credentials: "include"
       });

@@ -12,7 +12,7 @@ function EventPage() {
   const [selectedTickets, setSelectedTickets] = useState({});
 
   useEffect(() => {
-    fetch(`/events/${id}`)
+    fetch(`https://tiketi-tamashafrunt.onrender.com/events/${id}`)
       .then((r) => r.json())
       .then((event) => setEvent({ data: event, error: null, status: "resolved" }))
       .catch((err) => setEvent({ data: null, error: err.message, status: "rejected" }));
