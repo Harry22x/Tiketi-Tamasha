@@ -36,7 +36,7 @@ api = Api(app)
 # Instantiate CORS
 CORS(app, supports_credentials=True, resources={
     r"/*": {
-        "origins": ["https://euphonious-cupcake-bdec30.netlify.app/","http://localhost:3000"], 
+        "origins": ["https://euphonious-cupcake-bdec30.netlify.app","http://localhost:3000"], 
         "methods": ["GET", "POST", "PATCH", "DELETE"],
         "allow_headers": ["Content-Type"],
         "expose_headers": ["Access-Control-Allow-Credentials"],
