@@ -1,7 +1,14 @@
 import React from 'react'
 import './Navbar.css'
 import { Link } from "react-router-dom";
-function Navbar() {
+function Navbar({setUser,user}) {
+  function handleLogoutClick() {
+    fetch("/logout", { method: "DELETE" }).then((r) => {
+      if (r.ok) {
+        setUser(null);
+      }
+    });
+  }
   return (
     <>
     <header className="header">
@@ -28,14 +35,18 @@ function Navbar() {
           <a href="#" className="nav-link">
             Contact
           </a>
-          <Link to={`/login`}>
+          {user? (<button className="login-btn" onClick={handleLogoutClick}>Log out</button>):(         <Link to={`/login`}>
           <a href="#" className="login-btn">
             Login
-          </a></Link>
-          <Link to = {`/signup`}>
-          <a href="#" className="sign-btn">
-            Sign Up
-          </a></Link>
+          </a></Link>)}
+ 
+          {user? (null):(
+                      <Link to = {`/signup`}>
+                      <a href="#" className="sign-btn">
+                        Sign Up
+                      </a></Link>
+          )}
+
         </nav>
       </header>
 

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./index.css";
+import "../index.css";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState({ name: "", email: "", role: "", profilePic: "" });

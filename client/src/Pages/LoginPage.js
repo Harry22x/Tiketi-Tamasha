@@ -1,19 +1,21 @@
-import React from "react";
+import React,{useState} from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import { useOutletContext } from "react-router-dom";
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors }, setError } = useForm();
   const navigate = useNavigate();
-
-  // 🔹 Handle Login via Backend API
+  const [username,setUsername] = useState("")
+  const [password,setPassword] = useState("")
+  let [onLogin,user] = useOutletContext();
+ 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("https://your-backend.com/api/login", {
+      const response = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email, password: data.password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
@@ -21,8 +23,9 @@ export default function LoginPage() {
         throw new Error(errorData.message || "Login failed");
       }
 
-      // 🔹 Successful Login: Redirect to Profile
-      navigate("/profile");
+     else{
+      response.json().then((user) => onLogin(user)).then(navigate("/"))
+      };
     } catch (error) {
       setError("apiError", { message: error.message });
     }
@@ -33,36 +36,32 @@ export default function LoginPage() {
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gray-800">Login</h2>
 
-        {/* 🔹 Login Form */}
+        
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
-          {/* Email Input */}
+  
           <input
-            type="email"
-            placeholder="Email"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+$/i,
-                message: "Invalid email format",
-              },
-            })}
+            type="text"
+            placeholder="Username"
             className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+            value = {username}
+            onChange={(e) => setUsername(e.target.value)}
           />
-          {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+          {errors.username && <p className="text-red-500">{errors.username.message}</p>}
 
-          {/* Password Input */}
+        
           <input
             type="password"
             placeholder="Password"
-            {...register("password", { required: "Password is required" })}
             className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} 
           />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
 
-          {/* API Error */}
+        
           {errors.apiError && <p className="text-red-500">{errors.apiError.message}</p>}
 
-          {/* Submit Button */}
+          
           <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all">
             Login
           </button>
