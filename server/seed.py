@@ -12,9 +12,9 @@ from faker import Faker
 from app import app
 from models import db,User, UserTicket, Event, EventTicket
 
-if __name__ == '__main__':
+def seed_data():
     fake = Faker()
-    with app.app_context():
+    with db.session.begin():
         print("Starting seed...")
         print('Deleting data')
         User.query.delete()

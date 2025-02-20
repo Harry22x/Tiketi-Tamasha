@@ -5,6 +5,7 @@
 # Remote library imports
 from flask import request,make_response,session
 from flask_restful import Resource
+import os
 
 # Local imports
 from config import app, db, api
@@ -12,6 +13,23 @@ from config import app, db, api
 from models import User, UserTicket, Event, EventTicket
 
 # Views go here!
+
+with app.app_context():
+    db.create_all() 
+    print("✅ Database tables created (if not already present)")
+
+
+
+
+if os.getenv("RUN_SEED") == "true":
+    from seed import seed_data  
+
+  
+    with app.app_context():
+        seed_data()
+        print("✅ Seed data inserted successfully.")
+
+
 
 @app.route('/')
 def index():
