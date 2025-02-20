@@ -25,13 +25,12 @@ function App() {
       console.error("Error checking session:", error);
     }
   }
-  console.log(user)
+  
   useEffect(check_session, []);
   return (
     <>
     <header>< Navbar setUser={setUser} user={user}/></header>
     <Outlet context ={[setUser, user,check_session]}/>
-    < Reviews />
     < Footer/>
   
     

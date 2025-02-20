@@ -62,11 +62,13 @@ function EventPage() {
                     <span className="ticket-quantity">{selectedTickets[ticket.ticket_type]?.quantity || 0}</span>
                     <button className="quantity-btn" onClick={() => handleTicketChange(ticket.ticket_type, ticket.price, 1)}>+</button>
                   </div>
+                  
                 </div>
               ))}
           </div>
+          <p className="event-description">{event.description}</p>
         </div>
-
+              
         <div className="total-section">
           <h2 className="section-title">Total</h2>
           <p className="total-tickets">Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}</p>

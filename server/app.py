@@ -80,7 +80,7 @@ class Signup(Resource):
         
       
         session['user_id'] = new_user.id
-        # session.permanent = True
+        session.permanent = True
         
        
         return new_user.to_dict(), 201
@@ -96,7 +96,7 @@ class Login(Resource):
         if user and user.authenticate(data.get('password', '')):
             
             session['user_id'] = user.id
-            #session.permanent = True
+            session.permanent = True
             
            
             return user.to_dict(), 200
