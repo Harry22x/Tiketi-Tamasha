@@ -38,7 +38,6 @@ const UpcomingEvents = () => {
         <div className="flex items-center mb-8">
           <h2 className="text-3xl font-bold text-left w-full">Top Events</h2>
           <div className="flex space-x-6 ml-auto relative">
-            <button className="filter-btn">Weekdays</button>
             
             {/* Type Dropdown */}
             <div className="relative">

@@ -3,6 +3,8 @@ import './LandingPage.css'
 import UpcomingEvents from "./UpcomingEvents";
 import AddTicket from "./AddTicket";
 import image1 from '../images/image1.jpeg';
+import Reviews from '../components/Reviews'
+import Footer from './Footer';
 export default function LandingPage() {
   return (
     <div className="landing-container">
@@ -29,6 +31,8 @@ export default function LandingPage() {
       </main>
       <UpcomingEvents />
       <AddTicket />
+      < Reviews />
+      < Footer/>
     </div>
   );
 }

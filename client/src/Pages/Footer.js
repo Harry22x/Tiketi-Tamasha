@@ -99,7 +99,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-divider" />
-        <div className="copyright">Copyright © 2022 TiketiTamasha</div>
+        <div className="copyright">Copyright © 2025 TiketiTamasha</div>
       </div>
     </footer>
   );
