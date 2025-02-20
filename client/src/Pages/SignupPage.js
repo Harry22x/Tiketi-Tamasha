@@ -2,14 +2,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
 import { Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("event-goer"); // Default role
+  const [role, setRole] = useState("Attendee"); // Default role
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  let [onLogin,user] = useOutletContext();
+  // const { register, handleSubmit, formState: { errors }, setError } = useForm();
 
   // 🔹 Handle Signup via Backend API
   const handleSignup = async (e) => {
@@ -17,7 +20,7 @@ const SignupPage = () => {
     setError("");
 
     try {
-      const response = await fetch("https://your-backend.com/api/signup", {
+      const response = await fetch("/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password, role }),
@@ -25,7 +28,9 @@ const SignupPage = () => {
 
       if (!response.ok) throw new Error("Signup failed. Try again.");
 
-      navigate("/profile"); // Redirect on success
+      else{
+        response.json().then((user) => onLogin(user)).then(navigate("/"))
+        }; 
     } catch (err) {
       setError(err.message);
     }
@@ -70,8 +75,8 @@ const SignupPage = () => {
           onChange={(e) => setRole(e.target.value)}
           className="mb-2 p-2 border rounded w-full"
         >
-          <option value="event-goer">Event Goer</option>
-          <option value="organizer">Organizer</option>
+          <option value="Attendee">Event Goer</option>
+          <option value="Organizer">Organizer</option>
         </select>
 
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded w-full">
