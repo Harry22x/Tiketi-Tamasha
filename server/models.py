@@ -3,13 +3,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from config import db, bcrypt
 from sqlalchemy.orm import validates
-from sqlalchemy import Enum
-import enum
 
-class TicketType(enum.Enum):
-    REGULAR = "regular"
-    VIP = "vip"
-    ADVANCED = "advanced"
 
 
 
@@ -50,7 +44,7 @@ class User(db.Model, SerializerMixin):
 
     @validates('email')
     def validate_email(self, key, email):
-        if not email or '@' not in email:
+        if not email :
             raise ValueError("Invalid email address.")
         if User.query.filter(User.email == email).first():
             raise ValueError(f"Email '{email}' already exists.")
@@ -84,7 +78,7 @@ class EventTicket(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    ticket_type = db.Column(db.Enum(TicketType), nullable=False)
+    ticket_type = db.Column(db.String, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False) 
     available_quantity = db.Column(db.Integer, nullable=False)
     sale_end_date = db.Column(db.DateTime, nullable=False)
@@ -114,7 +108,8 @@ class Event(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
-    date = db.Column(db.DateTime, nullable=False)  
+    date = db.Column(db.String, nullable=False)  
+    time = db.Column(db.String)
     image = db.Column(db.String)
     location = db.Column(db.String, nullable=False)  
     status = db.Column(db.String, default='active')

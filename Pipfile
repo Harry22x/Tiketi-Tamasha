@@ -15,7 +15,5 @@ flask-cors = "*"
 faker = "*"
 flask-bcrypt = "*"
 
-[dev-packages]
-
 [requires]
 python_version = "3.12"
