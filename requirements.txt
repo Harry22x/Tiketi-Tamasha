@@ -6,7 +6,7 @@ bcrypt==4.2.1; python_version >= '3.7'
 click==8.1.8; python_version >= '3.7'
 decorator==5.1.1; python_version >= '3.7'
 executing==2.2.0; python_version >= '3.8'
-faker==36.1.1
+faker==35.2.2
 flask==2.2.5; python_version >= '3.7'
 flask-bcrypt==1.0.1
 flask-cors==5.0.0
