@@ -9,7 +9,6 @@ import string
 from faker import Faker
 
 # Local imports
-from app import app
 from models import db,User, UserTicket, Event, EventTicket
 
 def seed_data():
