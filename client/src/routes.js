@@ -5,6 +5,7 @@ import EventPage from "./Pages/EventPage";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import ProfilePage from "./Pages/Profile";
+import CreateEvent from "./Pages/CreateEvent";
 
 const routes = [
   {
@@ -18,7 +19,9 @@ const routes = [
       { path: "/signup", element: <SignupPage /> },
       {path:"/profile", element: <ProfilePage/>}
       
+      { path:"/create-event",element: <CreateEvent /> }
       
+      { path:"/create-event",element: <CreateEvent /> }
       
     ],
   },

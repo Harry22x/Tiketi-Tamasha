@@ -1,5 +1,4 @@
-import React from 'react'
-import './Navbar.css'
+import React from "react";
 import { Link } from "react-router-dom";
 function Navbar({setUser,user}) {
   function handleLogoutClick() {
@@ -51,4 +50,4 @@ function Navbar({setUser,user}) {
   )
 }
 
-export default Navbar
+export default Navbar;
