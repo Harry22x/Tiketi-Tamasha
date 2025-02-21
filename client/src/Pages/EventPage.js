@@ -13,7 +13,10 @@ function EventPage() {
 
   useEffect(() => {
     fetch(`/events/${id}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("Failed to fetch event data");
+        return r.json();
+      })
       .then((event) => setEvent({ data: event, error: null, status: "resolved" }))
       .catch((err) => setEvent({ data: null, error: err.message, status: "rejected" }));
   }, [id]);
@@ -36,20 +39,75 @@ function EventPage() {
     0
   );
 
-  if (status === "pending") return <p className="loading">Loading...</p>;
-  if (status === "rejected") return <p className="error">!Error: {error}</p>;
+  function purchase(){
+    getAccessToken().then(token => {
+      if (token) {
+          console.log("Access Token:", token);
+          stkPush(token);
+      } else {
+          console.log("Failed to get access token");
+      }
+  });
+  }
+
+
+  function getAccessToken() {
+    return fetch("http://localhost:5000/get-token") // Call your Flask backend
+        .then(response => response.json())
+        .then(data => data.access_token)
+        .catch(error => console.log("Error getting access token:", error));
+}
+
+function stkPush(token) {
+    let headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${token}`);  // Use the token dynamically
+
+    let body = JSON.stringify({
+        "BusinessShortCode": 174379,
+        "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjUwMjIwMTkxNjA3",
+        "Timestamp": "20250220191607",
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": 1,
+        "PartyA": 254708374149,
+        "PartyB": 174379,
+        "PhoneNumber": 254795416483,
+        "CallBackURL": "https://mydomain.com/path",
+        "AccountReference": "CompanyXLTD",
+        "TransactionDesc": "Tiketi"
+    });
+
+    fetch("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", {
+        method: 'POST',
+        headers,
+        body
+    })
+    .then(response => response.json())
+    .then(result => console.log("STK Push Response:", result))
+    .catch(error => console.log("Error sending STK Push:", error));
+}
+
+// Execute the process in the correct order
+
+
+
+  if (status === "pending") return <p className="loading">Loading event details...</p>;
+  if (status === "rejected") return <p className="error">⚠️ Error: {error}</p>;
 
   return (
     <div className="event-container">
       <div className="event-header">
-        <h1 className="event-title">{event.name}</h1>
-        <p className="event-date">{event.time} {event.date} • {event.location}</p>
+        <h1 className="event-title">{event?.name || "Event Name"}</h1>
+        <p className="event-date">
+          {event?.time || "Time"} {event?.date || "Date"} • {event?.location || "Location"}
+        </p>
       </div>
+
       <div className="event-content">
         <div className="tickets-section">
           <h2 className="section-title">Tickets</h2>
           <div className="ticket-list">
-            {event.event_tickets
+            {(event?.event_tickets || [])
               .filter(ticket => new Date(ticket.sale_end_date) > new Date())
               .map((ticket) => (
                 <div className="ticket-card" key={ticket.id}>
@@ -71,9 +129,11 @@ function EventPage() {
               
         <div className="total-section">
           <h2 className="section-title">Total</h2>
-          <p className="total-tickets">Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}</p>
+          <p className="total-tickets">
+            Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}
+          </p>
           <p className="total-price">Total: {totalAmount.toLocaleString()} KES</p>
-          <button className="purchase-button">Purchase tickets</button>
+          <button className="purchase-button" onClick={()=>purchase()}>Purchase tickets</button>
           <img className="event-image" src={event.image}></img>
         </div>
       </div>

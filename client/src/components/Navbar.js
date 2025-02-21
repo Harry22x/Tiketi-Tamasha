@@ -1,6 +1,6 @@
-import React from 'react'
-import './Navbar.css'
+import React from "react";
 import { Link } from "react-router-dom";
+import './Navbar.css'
 function Navbar({setUser,user}) {
   function handleLogoutClick() {
     fetch("/logout", { method: "DELETE" }).then((r) => {
@@ -51,4 +51,4 @@ function Navbar({setUser,user}) {
   )
 }
 
-export default Navbar
+export default Navbar;
