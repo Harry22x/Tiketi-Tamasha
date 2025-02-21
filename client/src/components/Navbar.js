@@ -1,10 +1,18 @@
 import React from 'react'
 import './Navbar.css'
-
-function Navbar() {
+import { Link } from "react-router-dom";
+function Navbar({setUser,user}) {
+  function handleLogoutClick() {
+    fetch("/logout", { method: "DELETE" }).then((r) => {
+      if (r.ok) {
+        setUser(null);
+      }
+    });
+  }
   return (
     <>
-      <header className="header">
+    <header className="header">
+      <Link to = {`/`}>
         <a href="#" className="logo-link">
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/f0d53468f8408c53aa2c9f2d0a86e6331b6609ac6744dc41946929048f6b8408?placeholderIfAbsent=true"
@@ -16,7 +24,7 @@ function Navbar() {
             <span className="logo-text-bold">Tiketi</span>
             <span className="logo-text-regular">Tamasha</span>
           </div>
-        </a>
+        </a></Link>
         <nav className="nav">
           <a href="#" className="nav-link">
             Schedule
@@ -24,13 +32,19 @@ function Navbar() {
           <a href="#footer" className="nav-link">
             Contact
           </a>
+          {user? (<button className="login-btn" onClick={handleLogoutClick}>Log out</button>):(         <Link to={`/login`}>
           
           <a href="#" className="login-btn">
             Login
-          </a>
-          <a href="#" className="sign-btn">
-            Sign Up
-          </a>
+          </a></Link>)}
+ 
+          {user? (null):(
+                      <Link to = {`/signup`}>
+                      <a href="#" className="sign-btn">
+                        Sign Up
+                      </a></Link>
+          )}
+
         </nav>
       </header>
     </>

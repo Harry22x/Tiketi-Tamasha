@@ -53,9 +53,6 @@ const Footer = () => {
                   <a href="#" className="nav-link">
                     Contact Us
                   </a>
-                  <a href="#" className="nav-link">
-                    Terms
-                  </a>
                 </nav>
               </div>
 
