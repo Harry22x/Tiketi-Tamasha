@@ -71,7 +71,7 @@ const CreateEvent = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+      <div className="bg-purple p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gray-800">Create Event</h2>
 
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
