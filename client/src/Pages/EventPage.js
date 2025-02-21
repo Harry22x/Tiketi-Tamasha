@@ -1,144 +1,44 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import "./EventPage.css";
+import event1 from '../images/event1.jpg'
+import event from '../images/event.jpeg'
+import event3 from '../images/event3.jpeg'
+import event4 from '../images/event4.jpg'
+import event7 from '../images/event7.jpg'
+import event8 from '../images/event8.jpg'
 
-function EventPage() {
-  const { id } = useParams();
-  const [{ data: event, error, status }, setEvent] = useState({
-    data: null,
-    error: null,
-    status: "pending",
-  });
-  const [selectedTickets, setSelectedTickets] = useState({});
+const EventTicket = ({ id, name, date, time, image, description }) => (
+  <div className="ticket-card">
+    <img src={image} alt={name} className="ticket-image" />
+    <div className="ticket-info">
+      <h3>{name}</h3>
+      <p>{date} - {time}</p>
+      <p>{description}</p>
+    </div>
+  </div>
+);
 
-  useEffect(() => {
-    fetch(`/events/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Failed to fetch event data");
-        return r.json();
-      })
-      .then((event) => setEvent({ data: event, error: null, status: "resolved" }))
-      .catch((err) => setEvent({ data: null, error: err.message, status: "rejected" }));
-  }, [id]);
-
-  const handleTicketChange = (ticketType, price, change) => {
-    setSelectedTickets((prev) => {
-      const updatedTickets = { ...prev };
-      if (updatedTickets[ticketType]) {
-        updatedTickets[ticketType].quantity += change;
-        if (updatedTickets[ticketType].quantity <= 0) delete updatedTickets[ticketType];
-      } else if (change > 0) {
-        updatedTickets[ticketType] = { quantity: 1, price };
-      }
-      return updatedTickets;
-    });
-  };
-
-  const totalAmount = Object.values(selectedTickets).reduce(
-    (total, ticket) => total + ticket.quantity * parseFloat(ticket.price),
-    0
-  );
-
-  function purchase(){
-    getAccessToken().then(token => {
-      if (token) {
-          console.log("Access Token:", token);
-          stkPush(token);
-      } else {
-          console.log("Failed to get access token");
-      }
-  });
-  }
-
-
-  function getAccessToken() {
-    return fetch("http://localhost:5000/get-token") // Call your Flask backend
-        .then(response => response.json())
-        .then(data => data.access_token)
-        .catch(error => console.log("Error getting access token:", error));
-}
-
-function stkPush(token) {
-    let headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${token}`);  // Use the token dynamically
-
-    let body = JSON.stringify({
-        "BusinessShortCode": 174379,
-        "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjUwMjIwMTkxNjA3",
-        "Timestamp": "20250220191607",
-        "TransactionType": "CustomerPayBillOnline",
-        "Amount": 1,
-        "PartyA": 254708374149,
-        "PartyB": 174379,
-        "PhoneNumber": 254795416483,
-        "CallBackURL": "https://mydomain.com/path",
-        "AccountReference": "CompanyXLTD",
-        "TransactionDesc": "Tiketi"
-    });
-
-    fetch("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", {
-        method: 'POST',
-        headers,
-        body
-    })
-    .then(response => response.json())
-    .then(result => console.log("STK Push Response:", result))
-    .catch(error => console.log("Error sending STK Push:", error));
-}
-
-// Execute the process in the correct order
-
-
-
-  if (status === "pending") return <p className="loading">Loading event details...</p>;
-  if (status === "rejected") return <p className="error">⚠️ Error: {error}</p>;
+const EventPage = () => {
+  const tickets = [
+    { id: 1, name: "Gala & Eco-market Festival", date: "2025-03-7", time: "6:00 PM", image: event1, },
+    { id: 2, name: "Harambee Starlets", date: "2025-02-21", time: "3:00 PM", image: event, },
+    { id: 3, name: "Taste & Toast Brunch", date: "2025-03-08", time: "9:00 AM", image: event3, },
+    { id: 4, name: "Fashion Forward", date: "2025-03-08", time: "6:00 PM", image: event4, },
+    { id: 5, name: "The meat-Up Fest", date: "2025-03-01", time: "11:00 AM", image: event7, },
+    { id: 6, name: "Meet & Great", date: "2025-03-01", time: "6:00 AM", image: event8, },
+  ];
+  
 
   return (
-    <div className="event-container">
-      <div className="event-header">
-        <h1 className="event-title">{event?.name || "Event Name"}</h1>
-        <p className="event-date">
-          {event?.time || "Time"} {event?.date || "Date"} • {event?.location || "Location"}
-        </p>
+    <section className="events-container">
+      <h2 className="events-title">Event Tickets</h2>
+      <div className="tickets-grid">
+        {tickets.map((ticket) => (
+          <EventTicket key={ticket.id} {...ticket} />
+        ))}
       </div>
-
-      <div className="event-content">
-        <div className="tickets-section">
-          <h2 className="section-title">Tickets</h2>
-          <div className="ticket-list">
-            {(event?.event_tickets || [])
-              .filter(ticket => new Date(ticket.sale_end_date) > new Date())
-              .map((ticket) => (
-                <div className="ticket-card" key={ticket.id}>
-                  <div className="ticket-info">
-                    <p className="ticket-type">{ticket.ticket_type}</p>
-                    <p className="ticket-price">{parseFloat(ticket.price).toLocaleString()} KES</p>
-                  </div>
-                  <div className="ticket-actions">
-                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.ticket_type, ticket.price, -1)}>-</button>
-                    <span className="ticket-quantity">{selectedTickets[ticket.ticket_type]?.quantity || 0}</span>
-                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.ticket_type, ticket.price, 1)}>+</button>
-                  </div>
-                  
-                </div>
-              ))}
-          </div>
-          <p className="event-description">{event.description}</p>
-        </div>
-              
-        <div className="total-section">
-          <h2 className="section-title">Total</h2>
-          <p className="total-tickets">
-            Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}
-          </p>
-          <p className="total-price">Total: {totalAmount.toLocaleString()} KES</p>
-          <button className="purchase-button" onClick={()=>purchase()}>Purchase tickets</button>
-          <img className="event-image" src={event.image}></img>
-        </div>
-      </div>
-    </div>
+    </section>
   );
-}
+};
 
 export default EventPage;

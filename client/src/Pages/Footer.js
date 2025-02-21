@@ -75,7 +75,6 @@ const Footer = () => {
                     aria-label="Enter your email to subscribe"
                   />
                   <button className="subscribe-button">Subscribe Now</button>
-                  <button className="subscribe-button">Subscribe Now</button>
                 </div>
               </div>
             </div>
