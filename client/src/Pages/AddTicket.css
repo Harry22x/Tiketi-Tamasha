@@ -10,8 +10,6 @@
 /* Create Events Component Styles */
 .create-events-container {
   border-radius: 0;
-  max-width: 1200px;
-  padding-left: 200px;
 }
 
 .create-events-content {
