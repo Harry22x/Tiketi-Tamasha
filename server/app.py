@@ -3,8 +3,10 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request,make_response,session
+from flask import request,make_response,session,jsonify
 from flask_restful import Resource
+import requests
+import base64
 
 # Local imports
 from config import app, db, api
@@ -13,6 +15,32 @@ from models import User, UserTicket, Event, EventTicket
 
 # Views go here!
 
+
+CONSUMER_KEY = "wrRTjoU6QhClK1Lf8TIJ0sxqJfCvfEgU68jepcKNxi96NHhR"
+CONSUMER_SECRET = "4acLqqC1SxAoT7ym3G5Y2903zg7fNG24MgSQhsX1cNWfFf4aWw8fpMbJKpwPo0Za"
+
+
+
+def get_mpesa_token():
+    url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+    auth = f"{CONSUMER_KEY}:{CONSUMER_SECRET}"
+    encoded_auth = base64.b64encode(auth.encode()).decode()
+    headers = {"Authorization": f"Basic {encoded_auth}"}
+    
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        return response.json()["access_token"]
+    else:
+        return None
+
+class get_token(Resource):
+    def get():
+        token = get_mpesa_token()
+        if token:
+            return jsonify({"access_token": token})
+        else:
+            return jsonify({"error": "Failed to get access token"}), 500
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
@@ -143,6 +171,7 @@ api.add_resource(Signup,'/signup')
 api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Logout, '/logout')
+api.add_resource(get_token, '/get-token')
 
 
 

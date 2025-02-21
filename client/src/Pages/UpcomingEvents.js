@@ -10,7 +10,7 @@ const EventCard = ({ id,title, date, time, image, description }) => (
   <div className="bg-white p-4 rounded-lg shadow-lg">
     <img src={image} alt={title} className="w-full h-40 object-cover rounded-lg mb-4" />
     <h3 className="text-xl font-semibold">{title}</h3>
-    <p className="text-sm text-gray-500 mb-4">{description}</p>
+    <p className="text-sm text-gray-500 mb-4"><b>{description}</b></p>
     <p className="text-sm text-gray-500">{date} - {time}</p>
   </div>
   </Link>
