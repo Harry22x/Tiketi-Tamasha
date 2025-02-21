@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useOutletContext } from "react-router-dom";
 const CreateEvent = () => {
-  const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -12,31 +11,15 @@ const CreateEvent = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  let [onLogin,user] = useOutletContext();
 
-  // 🔹 Fetch user data and check role
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("https://your-backend.com/api/user", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) throw new Error("Not authenticated");
-
-        const data = await response.json();
-        if (data.role !== "organizer") {
-          navigate("/"); // Redirect non-organizers
-        }
-      } catch (err) {
-        navigate("/login");
-      }
-    };
-
-    fetchUser();
+    if(user.role !== "Organizer"){
+      navigate("/");
+      return;
+    }
   }, [navigate]);
 
-  // 🔹 Handle Event Creation
   const handleCreateEvent = async (e) => {
     e.preventDefault();
     setError("");
@@ -44,7 +27,6 @@ const CreateEvent = () => {
 
     try {
       const formData = new FormData();
-      formData.append("id", id);
       formData.append("name", name);
       formData.append("description", description);
       formData.append("date", date);
@@ -77,14 +59,6 @@ const CreateEvent = () => {
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
 
         <form onSubmit={handleCreateEvent} className="space-y-4 mt-6">
-          <input
-            type="text"
-            placeholder="Event ID"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-            required
-          />
           <input
             type="text"
             placeholder="Event Name"

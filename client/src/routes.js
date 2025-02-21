@@ -17,11 +17,8 @@ const routes = [
       {path:"/events/:id", element: <EventPage/>},
       { path: "/login", element: <LoginPage /> },
       { path: "/signup", element: <SignupPage /> },
-      {path:"/profile", element: <ProfilePage/>}
-      
-      { path:"/create-event",element: <CreateEvent /> }
-      
-      { path:"/create-event",element: <CreateEvent /> }
+      {path:"/profile", element: <ProfilePage/>},      
+      { path:"/create-event",element: <CreateEvent /> },
       
     ],
   },

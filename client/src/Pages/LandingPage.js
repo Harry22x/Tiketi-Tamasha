@@ -5,8 +5,10 @@ import UpcomingEvents from "./UpcomingEvents";
 import AddTicket from "./AddTicket";
 import image1 from '../images/image1.jpeg';
 import Reviews from "../components/Reviews";
-import { Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
+
 export default function LandingPage() {
+  let [onLogin,user] = useOutletContext();
   return (
     <div className="landing-container">
       <main className="main-content">
@@ -31,10 +33,9 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
-      
-      {/* ✅ Render child components correctly */}
       <UpcomingEvents key="upcoming-events" />
-      <AddTicket key="add-ticket" />
+      {user && user.role=="Organizer" ? ( <AddTicket key="add-ticket" />):(null)}
+     
     </div>
   );
 }

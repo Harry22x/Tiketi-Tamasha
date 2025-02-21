@@ -57,6 +57,17 @@ class Events(Resource):
         } for event in Event.query.all()]
         return make_response(events,200)
 
+    def post(self):
+        data = request.get_json()
+        new_event = Event(
+            name = data['name'],
+            time = data['time'],
+            location = data['location']
+        )
+        db.session.add(new_event)
+        db.session.commit()
+        return make_response( new_event.to_dict(), 201)
+
 class EventByID(Resource):
     def get(self, id):
         event = Event.query.get(id)
