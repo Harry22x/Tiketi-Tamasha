@@ -112,3 +112,8 @@ body {
     font-weight: bold;
     
   }
+
+  .phone-number{
+    background-color: #bfb0b0;
+    border-radius: 5px;
+  }

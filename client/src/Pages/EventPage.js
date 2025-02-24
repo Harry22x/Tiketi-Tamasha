@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useOutletContext } from "react-router-dom";
 import "./EventPage.css";
 
 function EventPage() {
@@ -10,6 +10,10 @@ function EventPage() {
     status: "pending",
   });
   const [selectedTickets, setSelectedTickets] = useState({});
+  const [phoneNumber, setPhoneNumber] = useState(254);
+  const [errors, setErrors] = useState("");
+  const [purchasebtn, setPurchasebtn] = useState("purchase tickets")
+  let [onLogin, user] = useOutletContext();
 
   useEffect(() => {
     fetch(`/events/${id}`)
@@ -21,14 +25,15 @@ function EventPage() {
       .catch((err) => setEvent({ data: null, error: err.message, status: "rejected" }));
   }, [id]);
 
-  const handleTicketChange = (ticketType, price, change) => {
+  const handleTicketChange = (id, ticketType, price, change) => {
     setSelectedTickets((prev) => {
       const updatedTickets = { ...prev };
       if (updatedTickets[ticketType]) {
         updatedTickets[ticketType].quantity += change;
+        updatedTickets[ticketType].id = id;
         if (updatedTickets[ticketType].quantity <= 0) delete updatedTickets[ticketType];
       } else if (change > 0) {
-        updatedTickets[ticketType] = { quantity: 1, price };
+        updatedTickets[ticketType] = { quantity: 1, price, id };
       }
       return updatedTickets;
     });
@@ -39,57 +44,98 @@ function EventPage() {
     0
   );
 
-  function purchase(){
-    getAccessToken().then(token => {
+  async function purchase() {
+    setPurchasebtn("Purchasing tickets...")
+    try {
+      const token = await getAccessToken();
       if (token) {
-          console.log("Access Token:", token);
-          stkPush(token);
+        console.log("Access Token:", token);
+        const result = await stkPush();
+        if (result && result.ResponseCode === "0") {
+          await createUserTicket();
+          setErrors(""); // Clear errors on successful purchase
+        } else {
+          console.log("STK Push failed:", result);
+          setErrors("Payment initiation failed. Please try again." + result.errorMessage);
+        }
       } else {
-          console.log("Failed to get access token");
+        console.log("Failed to get access token");
+        setErrors("Failed to initiate payment. Please try again.");
       }
-  });
+    } catch (error) {
+      console.error("Error in purchase function:", error);
+      setErrors("An error occurred. Please try again.");
+    }
+    setPurchasebtn("Purchase Tikcets")
   }
 
+  function createUserTicket() {
+    for (let ticket in selectedTickets) {
+      fetch(`/user-tickets`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event_id: id,
+          user_id: user.id,
+          event_ticket_id: selectedTickets[ticket].id,
+          ticket_quantity: selectedTickets[ticket].quantity,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log("success");
+          } else {
+            response.json().then((err) => {
+              setErrors(err.error);
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error creating user ticket:", error);
+          setErrors("Failed to create user ticket. Please try again.");
+        });
+    }
+  }
 
   function getAccessToken() {
-    return fetch("http://localhost:5000/get-token") // Call your Flask backend
-        .then(response => response.json())
-        .then(data => data.access_token)
-        .catch(error => console.log("Error getting access token:", error));
-}
+    return fetch("/get-token")
+      .then((response) => response.json())
+      .then((data) => data.access_token)
+      .catch((error) => {
+        console.log("Error getting access token:", error);
+        setErrors("Failed to get access token. Please try again.");
+      });
+  }
 
-function stkPush(token) {
-    let headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${token}`);  // Use the token dynamically
-
-    let body = JSON.stringify({
-        "BusinessShortCode": 174379,
-        "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjUwMjIwMTkxNjA3",
-        "Timestamp": "20250220191607",
-        "TransactionType": "CustomerPayBillOnline",
-        "Amount": 1,
-        "PartyA": 254708374149,
-        "PartyB": 174379,
-        "PhoneNumber": 254795416483,
-        "CallBackURL": "https://mydomain.com/path",
-        "AccountReference": "CompanyXLTD",
-        "TransactionDesc": "Tiketi"
-    });
-
-    fetch("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", {
-        method: 'POST',
-        headers,
-        body
+  function stkPush() {
+    return fetch("/stk-push", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phone: Number(phoneNumber),
+        amount: totalAmount,
+      }),
     })
-    .then(response => response.json())
-    .then(result => console.log("STK Push Response:", result))
-    .catch(error => console.log("Error sending STK Push:", error));
-}
-
-// Execute the process in the correct order
-
-
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("STK Push failed");
+        }
+        return response.json();
+      })
+      .then((result) => {
+        console.log("STK Push Response:", result);
+        return result;
+      })
+      .catch((error) => {
+        console.log("Error sending STK Push:", error);
+        setErrors("Failed to send STK Push. Please try again.");
+        throw error;
+      });
+  }
 
   if (status === "pending") return <p className="loading">Loading event details...</p>;
   if (status === "rejected") return <p className="error">⚠️ Error: {error}</p>;
@@ -108,7 +154,6 @@ function stkPush(token) {
           <h2 className="section-title">Tickets</h2>
           <div className="ticket-list">
             {(event?.event_tickets || [])
-              .filter(ticket => new Date(ticket.sale_end_date) > new Date())
               .map((ticket) => (
                 <div className="ticket-card" key={ticket.id}>
                   <div className="ticket-info">
@@ -116,25 +161,27 @@ function stkPush(token) {
                     <p className="ticket-price">{parseFloat(ticket.price).toLocaleString()} KES</p>
                   </div>
                   <div className="ticket-actions">
-                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.ticket_type, ticket.price, -1)}>-</button>
+                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.id, ticket.ticket_type, ticket.price, -1)}>-</button>
                     <span className="ticket-quantity">{selectedTickets[ticket.ticket_type]?.quantity || 0}</span>
-                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.ticket_type, ticket.price, 1)}>+</button>
+                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.id, ticket.ticket_type, ticket.price, 1)}>+</button>
                   </div>
-                  
                 </div>
               ))}
           </div>
           <p className="event-description">{event.description}</p>
         </div>
-              
+
         <div className="total-section">
           <h2 className="section-title">Total</h2>
           <p className="total-tickets">
             Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}
           </p>
           <p className="total-price">Total: {totalAmount.toLocaleString()} KES</p>
-          <button className="purchase-button" onClick={()=>purchase()}>Purchase tickets</button>
-          <img className="event-image" src={event.image}></img>
+          <b><label htmlFor="phone-number">*Enter phone number for Mpesa transaction:</label></b>
+          <input id="phone-number" value={phoneNumber} className="phone-number" onChange={(e) => setPhoneNumber(e.target.value)}></input>
+          <button className="purchase-button" onClick={() => purchase()}>{purchasebtn}</button>
+          {errors && <p className="error-message">{errors}</p>}
+          <img className="event-image" src={event.image} alt="Event" />
         </div>
       </div>
     </div>

@@ -7,6 +7,11 @@ from flask import request,make_response,session,jsonify
 from flask_restful import Resource
 import requests
 import base64
+from datetime import datetime
+from random import randint, choice as rc, choices
+
+
+import string
 
 # Local imports
 from config import app, db, api
@@ -18,6 +23,10 @@ from models import User, UserTicket, Event, EventTicket
 
 CONSUMER_KEY = "wrRTjoU6QhClK1Lf8TIJ0sxqJfCvfEgU68jepcKNxi96NHhR"
 CONSUMER_SECRET = "4acLqqC1SxAoT7ym3G5Y2903zg7fNG24MgSQhsX1cNWfFf4aWw8fpMbJKpwPo0Za"
+BUSINESS_SHORTCODE = "174379"
+PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
+CALLBACK_URL = "https://yourdomain.com/callback"
+
 
 
 
@@ -33,14 +42,52 @@ def get_mpesa_token():
         return response.json()["access_token"]
     else:
         return None
+def generate_password():
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    password_str = f"{BUSINESS_SHORTCODE}{PASSKEY}{timestamp}"
+    encoded_password = base64.b64encode(password_str.encode()).decode()
+    return encoded_password, timestamp
 
 class get_token(Resource):
-    def get():
+    def get(self):
         token = get_mpesa_token()
         if token:
             return jsonify({"access_token": token})
         else:
             return jsonify({"error": "Failed to get access token"}), 500
+        
+
+class stk_push(Resource):
+    def post(self):
+        token = get_mpesa_token()
+        if not token:
+            return jsonify({"error": "Failed to get access token"}), 500
+        
+        password, timestamp = generate_password()
+
+        payload = {
+            "BusinessShortCode": BUSINESS_SHORTCODE,
+            "Password": password,
+            "Timestamp": timestamp,
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": request.json.get("amount", 1), 
+            "PartyA": request.json.get("phone"),  
+            "PartyB": BUSINESS_SHORTCODE,
+            "PhoneNumber": request.json.get("phone"),
+            "CallBackURL": CALLBACK_URL,
+            "AccountReference": "Tiketi",
+            "TransactionDesc": "Payment"
+        }
+
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+
+        mpesa_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+        response = requests.post(mpesa_url, json=payload, headers=headers)
+
+        return response.json()
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
@@ -175,6 +222,20 @@ class Logout(Resource):
             return '', 204
         except Exception as e:
             return {'error': str(e)}, 500
+        
+
+class HandleUserTickets(Resource):
+    def post(self):
+        data = request.get_json()
+
+        new_user_ticket = UserTicket(
+            user_id = data['user_id'],
+            event_ticket_id = data['event_ticket_id'],
+            ticket_quantity = data['ticket_quantity'],
+            ticket_code = ''.join(  choices(string.ascii_letters + string.digits, k=10))
+        )
+        db.session.add(new_user_ticket)
+        db.session.commit()
 
 api.add_resource(Events,'/events')
 api.add_resource(EventByID,'/events/<int:id>')
@@ -183,6 +244,8 @@ api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Logout, '/logout')
 api.add_resource(get_token, '/get-token')
+api.add_resource(stk_push,'/stk-push')
+api.add_resource(HandleUserTickets, '/user-tickets')
 
 
 
