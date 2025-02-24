@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const CreateEvent = () => {
   const [eventData, setEventData] = useState({
@@ -19,27 +20,17 @@ const CreateEvent = () => {
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [userRole, setUserRole] = useState("");
+   let [onLogin,user] = useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("https://your-backend.com/api/user", {
-          method: "GET",
-          credentials: "include",
-        });
+    
 
-        if (!response.ok) {
-          navigate("/login");
-          return;
-        }
-
-        const user = await response.json();
-        setUserRole(user.role);
-
-        if (user.role !== "organizer") {
+        if (user.role !== "Organizer") {
           alert("Access denied! Only organizers can create events.");
-          navigate("/dashboard");
+          navigate("/");
         }
       } catch (err) {
         console.error("Error fetching user:", err.message);
@@ -74,7 +65,7 @@ const CreateEvent = () => {
     setUploading(true);
     setError("");
 
-    if (userRole !== "organizer") {
+    if (userRole !== "Organizer") {
       setError("You do not have permission to create an event.");
       setUploading(false);
       return;

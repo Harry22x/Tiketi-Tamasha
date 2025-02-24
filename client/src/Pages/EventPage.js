@@ -50,7 +50,7 @@ function EventPage() {
         const result = await stkPush();
         if (result && result.ResponseCode === "0") {
           await createUserTicket();
-          setErrors(""); // Clear errors on successful purchase
+          setErrors(""); 
         } else {
           console.log("STK Push failed:", result);
           setErrors("Payment initiation failed. Please try again." + result.errorMessage);
