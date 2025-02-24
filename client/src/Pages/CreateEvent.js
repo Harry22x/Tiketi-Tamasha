@@ -10,14 +10,18 @@ const CreateEvent = () => {
     time: "",
     location: "",
     image: null,
+    tickets: {
+      regular: { price: "", quantity: "" },
+      advanced: { price: "", quantity: "" },
+      vip: { price: "", quantity: "" },
+    },
   });
 
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [userRole, setUserRole] = useState(""); // Track user role
+  const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
 
-  // 🔹 Fetch logged-in user details
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -46,7 +50,6 @@ const CreateEvent = () => {
     fetchUser();
   }, [navigate]);
 
-  // 🔹 Handle form input changes
   const handleChange = (e) => {
     const { name, value, type } = e.target;
     if (type === "file") {
@@ -56,17 +59,36 @@ const CreateEvent = () => {
     }
   };
 
-  // 🔹 Handle event creation
+  const handleTicketChange = (e, category) => {
+    const { name, value } = e.target;
+    setEventData({
+      ...eventData,
+      tickets: {
+        ...eventData.tickets,
+        [category]: { ...eventData.tickets[category], [name]: name === "price" ? `$${value}` : value.replace(/[^0-9]/g, "") },
+      },
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
     setError("");
 
+    if (userRole !== "organizer") {
+      setError("You do not have permission to create an event.");
+      setUploading(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       Object.keys(eventData).forEach((key) => {
-        formData.append(key, eventData[key]);
+        if (key !== "tickets") {
+          formData.append(key, eventData[key]);
+        }
       });
+      formData.append("tickets", JSON.stringify(eventData.tickets));
 
       const response = await fetch("https://your-backend.com/api/events", {
         method: "POST",
@@ -84,113 +106,47 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-6">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-center text-gray-800">Create an Event</h2>
+    <div className="min-h-screen flex flex-col items-center justify-center pt-20 bg-gradient-to-br from-blue-600 to-purple-700 p-8">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-2xl">
+        <h2 className="text-4xl font-bold text-center text-gray-900 mb-6">Create an Event</h2>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-          {/* Event ID */}
-          <div>
-            <label className="block text-gray-700 font-medium">Event ID</label>
-            <input
-              type="text"
-              name="id"
-              placeholder="Enter event ID"
-              value={eventData.id}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Event Name */}
-          <div>
-            <label className="block text-gray-700 font-medium">Event Name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter event name"
-              value={eventData.name}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Event Description */}
-          <div>
-            <label className="block text-gray-700 font-medium">Description</label>
-            <textarea
-              name="description"
-              placeholder="Describe the event"
-              value={eventData.description}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 resize-none h-24"
-            />
-          </div>
-
-          {/* Event Date & Time */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <input type="text" name="id" placeholder="Event ID" value={eventData.id} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400" />
+          <input type="text" name="name" placeholder="Event Name" value={eventData.name} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400" />
+          <textarea name="description" placeholder="Description" value={eventData.description} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 resize-none h-32" />
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 font-medium">Date</label>
-              <input
-                type="date"
-                name="date"
-                value={eventData.date}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium">Time</label>
-              <input
-                type="time"
-                name="time"
-                value={eventData.time}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+            <input type="date" name="date" value={eventData.date} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400" />
+            <input type="time" name="time" value={eventData.time} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <input type="text" name="location" placeholder="Location" value={eventData.location} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400" />
+          <input type="file" name="image" accept="image/*" onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm bg-white" />
+
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold text-gray-800">Ticket Pricing</h3>
+            {Object.keys(eventData.tickets).map((category) => (
+              <div key={category} className="grid grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="price"
+                  placeholder={`${category.charAt(0).toUpperCase() + category.slice(1)} Price`}
+                  value={eventData.tickets[category].price}
+                  onChange={(e) => handleTicketChange(e, category)}
+                  className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                />
+                <input
+                  type="text"
+                  name="quantity"
+                  placeholder={`${category.charAt(0).toUpperCase() + category.slice(1)} Quantity`}
+                  value={eventData.tickets[category].quantity}
+                  onChange={(e) => handleTicketChange(e, category)}
+                  className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            ))}
           </div>
 
-          {/* Location */}
-          <div>
-            <label className="block text-gray-700 font-medium">Location</label>
-            <input
-              type="text"
-              name="location"
-              placeholder="Enter event location"
-              value={eventData.location}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Event Image Upload */}
-          <div>
-            <label className="block text-gray-700 font-medium">Upload Event Image</label>
-            <input
-              type="file"
-              name="image"
-              accept="image/*"
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg bg-white"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={uploading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all font-semibold"
-          >
+          <button type="submit" disabled={uploading} className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-all shadow-md">
             {uploading ? "Creating Event..." : "Create Event"}
           </button>
         </form>
