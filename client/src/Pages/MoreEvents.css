@@ -1,18 +1,19 @@
 .events-container {
-  padding: 70px;
+  padding-left: 70px;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .events-title {
   font-size: 2rem;
-  margin-bottom: 60px;
+  margin-bottom: 10px;
   margin-top: 40px;
   text-align: center;
 }
 
 .tickets-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 60px;
 }
 

@@ -9,18 +9,18 @@ import string
 from faker import Faker
 
 # Local imports
-from app import app
 from models import db,User, UserTicket, Event, EventTicket
+from app import app
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     fake = Faker()
     with app.app_context():
         print("Starting seed...")
         print('Deleting data')
-        User.query.delete()
         UserTicket.query.delete()
-        Event.query.delete()
         EventTicket.query.delete()
+        Event.query.delete()
+        User.query.delete()
 
         print("Creating users...")
         users = []
@@ -90,7 +90,57 @@ if __name__ == '__main__':
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image6.jpeg?raw=true",
                 location = fake.address()
+            ),
+
+            Event(
+                name="Gala & Eco-market Festival",
+                description="Get your engines revving at Tarmac Racing! A thrilling day of high-speed action where you'll witness adrenaline-fueled races and see some of the fastest cars tear through the track. Feel the rush as skilled drivers go head-to-head in a heart-pounding race to the finish line!",
+                date="July 25, 2025",
+                time="4:00 PM",
+                image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event1.jpg?raw=true",
+                location = fake.address()
+            ),
+            Event(
+                name="Harambee Starlets",
+                description="Kenya’s pride in women’s football! A team of passion, skill, and resilience, inspiring the nation with every game. #RiseWithTheStarlets",
+                date="February 21, 2025",
+                time="3:00 PM",
+                image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event.jpeg?raw=true",
+                location = fake.address()
+            ),
+            Event(
+                name="Taste & Toast Brunch",
+                description="A delightful fusion of flavors and fine toasts! Indulge in a gourmet brunch experience featuring delicious bites, refreshing drinks, and great company. Sip, savor, and celebrate the perfect mid-morning treat! ",
+                date="March 08, 2025",
+                time="12:00 PM",
+                image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event3.jpeg?raw=true",
+                location = fake.address()
+            ),
+            Event(
+                name="Fashion Forward",
+                description="A bold showcase of style, innovation, and creativity! Step into the future of fashion with trendsetting designs, visionary designers, and a celebration of individuality. Where fashion meets the future!",
+                date="March 08, 2025",
+                time="6:00 PM",
+                image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event4.jpg?raw=true",
+                location = fake.address()
+            ),
+            Event(
+                name="The meat-Up Fest",
+                description="bigger and better! Indulge in unlimited mouthwatering bites from every food station – from sizzling beef and tender mbuzi to juicy lamb and flavorful chicken – and you get to eat all these with your single ticket. Please note the event is adults only and not BYOB. Drinks will be available for purchase at Liquor Library. Let's sip, savor and celebrate responsibly. See you there!",
+                date="March 01, 2025",
+                time="4:00 PM",
+                image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event7.jpg?raw=true",
+                location = fake.address()
+            ),
+            Event(
+                name="Meet & Great",
+                description="An exclusive gathering to connect, network, and create unforgettable moments! Whether mingling with industry leaders, celebrities, or like-minded individuals, this is the perfect opportunity to build relationships in a relaxed and engaging setting.",
+                date="March 01, 2025",
+                time="4:00 PM",
+                image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event8.jpg?raw=true",
+                location = fake.address()
             )
+
         ]
         db.session.add_all(events)
 
