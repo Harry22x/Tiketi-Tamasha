@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 const CreateEvent = () => {
   const [eventData, setEventData] = useState({
-    id: "",
     name: "",
     description: "",
     date: "",
@@ -97,8 +96,9 @@ const CreateEvent = () => {
       });
 
       if (!response.ok) throw new Error("Event creation failed.");
+      const createdEvent = await response.json();
       alert("Event created successfully!");
-      navigate("/dashboard");
+      navigate(`/events/${createdEvent.id}`);
     } catch (err) {
       setError(err.message);
     }
@@ -112,7 +112,6 @@ const CreateEvent = () => {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <input type="text" name="id" placeholder="Event ID" value={eventData.id} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400" />
           <input type="text" name="name" placeholder="Event Name" value={eventData.name} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400" />
           <textarea name="description" placeholder="Description" value={eventData.description} onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 resize-none h-32" />
           <div className="grid grid-cols-2 gap-4">
