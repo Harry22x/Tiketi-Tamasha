@@ -17,10 +17,7 @@ function EventPage() {
 
   useEffect(() => {
     fetch(`/events/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Failed to fetch event data");
-        return r.json();
-      })
+      .then((r) => r.json())
       .then((event) => setEvent({ data: event, error: null, status: "resolved" }))
       .catch((err) => setEvent({ data: null, error: err.message, status: "rejected" }));
   }, [id]);
@@ -143,12 +140,9 @@ function EventPage() {
   return (
     <div className="event-container">
       <div className="event-header">
-        <h1 className="event-title">{event?.name || "Event Name"}</h1>
-        <p className="event-date">
-          {event?.time || "Time"} {event?.date || "Date"} • {event?.location || "Location"}
-        </p>
+        <h1 className="event-title">{event.name}</h1>
+        <p className="event-date">{event.time} {event.date} • {event.location}</p>
       </div>
-
       <div className="event-content">
         <div className="tickets-section">
           <h2 className="section-title">Tickets</h2>
@@ -173,9 +167,7 @@ function EventPage() {
 
         <div className="total-section">
           <h2 className="section-title">Total</h2>
-          <p className="total-tickets">
-            Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}
-          </p>
+          <p className="total-tickets">Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}</p>
           <p className="total-price">Total: {totalAmount.toLocaleString()} KES</p>
           <b><label htmlFor="phone-number">*Enter phone number for Mpesa transaction:</label></b>
           <input id="phone-number" value={phoneNumber} className="phone-number" onChange={(e) => setPhoneNumber(e.target.value)}></input>

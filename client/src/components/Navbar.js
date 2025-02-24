@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import './Navbar.css'
 function Navbar({setUser,user}) {
   function handleLogoutClick() {
-    fetch("/logout", { method: "DELETE" }).then((r) => {
+    fetch("https://tiketi-tamashafrunt.onrender.com/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
         setUser(null);
       }
@@ -26,9 +26,12 @@ function Navbar({setUser,user}) {
           </div>
         </a></Link>
         <nav className="nav">
-          <a href="#" className="nav-link">
-            Schedule
-          </a>
+          <Link to={`/more-events`}> <div className="nav-link">
+                  <a href="/events" >  
+                  Tickets
+                  </a>
+                  </div>
+          </Link>
           <a href="#footer" className="nav-link">
             Contact
           </a>

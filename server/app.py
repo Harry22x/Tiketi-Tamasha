@@ -5,6 +5,7 @@
 # Remote library imports
 from flask import request,make_response,session,jsonify
 from flask_restful import Resource
+import os
 import requests
 import base64
 from datetime import datetime
@@ -19,6 +20,10 @@ from config import app, db, api
 from models import User, UserTicket, Event, EventTicket
 
 # Views go here!
+
+
+
+
 
 
 CONSUMER_KEY = "wrRTjoU6QhClK1Lf8TIJ0sxqJfCvfEgU68jepcKNxi96NHhR"

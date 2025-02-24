@@ -5,7 +5,6 @@ section {
 }
 
 .container {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -27,8 +26,8 @@ h2 {
 }
 
 .bg-white:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  /* transform: translateY(-10px); */
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.15);
 }
 
 .w-full {
@@ -58,7 +57,6 @@ h2 {
 
 .text-sm {
   font-size: 17px;
-  color: #000000;
   font-family: "DM Sans", sans-serif;
 
 }
@@ -107,7 +105,7 @@ h2 {
   padding: 8px 0;
 }
 
-/* Dropdown links */
+/* Dropdown links
 .absolute a {
   display: block;
   padding: 10px 16px;
@@ -121,7 +119,7 @@ h2 {
 
 .absolute a:hover {
   background-color: #f1f1f1;
-}
+} */
 .arrow {
   margin-left: 0.5rem;
 }
@@ -176,29 +174,19 @@ h2 {
 /* Button Styling */
 /* Button Styling */
 a.bg-blue-500 {
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   display: inline-block;
-  color: #000000;
   padding: 0.75rem 1.5rem;
   border-radius: 0.75rem;
   text-align: center;
   text-decoration: none;
   font-weight: 600;
-  transition: background-color 0.3s ease;
-  margin-top: 20px; /* Added margin to move the button lower */
-  border: 1px solid #000000;
+  transition: background-color 0.s ease;
+  margin-top: 20px; 
   border-radius: 50px;
-  transition: all 0.5s ease; /* Adds smooth transition */
+  transition: all 0.5s ease; 
   font-family: "DM Sans", sans-serif;
 
 }
-
-a.bg-blue-500:hover {
-  background-color: #b10569;
-  border: 2px solid #ffffff;
-
-}
-
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .container {
