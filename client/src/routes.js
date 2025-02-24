@@ -6,7 +6,6 @@ import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import ProfilePage from "./Pages/Profile";
 import CreateEvent from "./Pages/CreateEvent";
-import UpcomingEvents from "./Pages/UpcomingEvents";
 import MoreEvents from "./Pages/MoreEvents";
 const routes = [
   {
@@ -21,7 +20,6 @@ const routes = [
       {path:"/profile", element: <ProfilePage/>},      
       { path:"/create-event",element: <CreateEvent /> },
       {path:"/more-events", element:<MoreEvents />}
-      
     ],
   },
 ];
