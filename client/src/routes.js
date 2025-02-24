@@ -1,13 +1,13 @@
 import LandingPage from "./Pages/LandingPage";
 import App from "./App";
 import AddTicket from "./Pages/AddTicket";
-import EventPage from "./Pages/EventPage";
+import EventPage from "./Pages/MoreEvents";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import ProfilePage from "./Pages/Profile";
 import CreateEvent from "./Pages/CreateEvent";
 import UpcomingEvents from "./Pages/UpcomingEvents";
-
+import MoreEvents from "./Pages/MoreEvents";
 const routes = [
   {
     path: "/",
@@ -20,8 +20,7 @@ const routes = [
       { path: "/signup", element: <SignupPage /> },
       {path:"/profile", element: <ProfilePage/>},      
       { path:"/create-event",element: <CreateEvent /> },
-      {path:"/", element:<UpcomingEvents />} ,
-       {path:"/events", element:<EventPage />}
+      {path:"/more-events", element:<MoreEvents />}
       
     ],
   },

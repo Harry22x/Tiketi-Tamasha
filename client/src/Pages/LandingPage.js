@@ -35,7 +35,7 @@ export default function LandingPage() {
       </main>
       <UpcomingEvents key="upcoming-events" />
       {user && user.role=="Organizer" ? ( <AddTicket key="add-ticket" />):(null)}
-     
+     <Reviews/>
     </div>
   );
 }

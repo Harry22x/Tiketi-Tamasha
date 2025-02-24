@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./EventPage.css";
+import "./MoreEvents.css";
 import event1 from '../images/event1.jpg'
 import event from '../images/event.jpeg'
 import event3 from '../images/event3.jpeg'

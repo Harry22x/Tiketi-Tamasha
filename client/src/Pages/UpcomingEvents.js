@@ -72,11 +72,12 @@ const UpcomingEvents = () => {
             <EventCard key={index} {...event} />
           ))}
         </div>
-        <div className="text-center mt-8">
+        <Link to={`/more-events`}> <div className="text-center mt-8">
         <a href="/events" className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 border-none">  
         Load More
           </a>
-        </div>
+        </div></Link>
+       
       </div>
     </section>
   );
