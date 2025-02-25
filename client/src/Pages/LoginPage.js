@@ -1,21 +1,19 @@
-import React,{useState} from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
+
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors }, setError } = useForm();
   const navigate = useNavigate();
-  const [username,setUsername] = useState("")
-  const [password,setPassword] = useState("")
-  let [onLogin,user] = useOutletContext();
- 
+  const [setUser] = useOutletContext(); // Corrected to extract setUser
+
   const onSubmit = async (data) => {
     try {
       const response = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
@@ -23,9 +21,13 @@ export default function LoginPage() {
         throw new Error(errorData.message || "Login failed");
       }
 
-     else{
-      response.json().then((user) => onLogin(user)).then(navigate("/"))
-      };
+      const { token, user } = await response.json();
+      
+      // Store JWT securely
+      localStorage.setItem("jwtToken", token);
+      setUser(user); // Update user state
+
+      navigate("/");
     } catch (error) {
       setError("apiError", { message: error.message });
     }
@@ -36,42 +38,42 @@ export default function LoginPage() {
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gray-800">Login</h2>
 
-        
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
-  
-          <input
-            type="text"
-            placeholder="Username"
-            className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-            value = {username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          {errors.username && <p className="text-red-500">{errors.username.message}</p>}
+          <div>
+            <input
+              {...register("username", { required: "Username is required" })}
+              type="text"
+              placeholder="Username"
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              aria-invalid={errors.username ? "true" : "false"}
+            />
+            {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+          </div>
 
-        
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} 
-          />
-          {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+          <div>
+            <input
+              {...register("password", { required: "Password is required" })}
+              type="password"
+              placeholder="Password"
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              aria-invalid={errors.password ? "true" : "false"}
+            />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          </div>
 
-        
-          {errors.apiError && <p className="text-red-500">{errors.apiError.message}</p>}
+          {errors.apiError && <p className="text-red-500 text-sm">{errors.apiError.message}</p>}
 
-          
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all">
+          <button 
+            type="submit" 
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"
+          >
             Login
           </button>
         </form>
 
-        <Link to={`/signup`}>
         <p className="mt-4 text-center text-gray-600">
-          Don't have an account? <a href="/signup" className="text-blue-500 hover:underline">Sign Up</a>
+          Don't have an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link>
         </p>
-        </Link>
       </div>
     </div>
   );
