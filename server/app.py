@@ -10,6 +10,13 @@ import requests
 import base64
 from datetime import datetime
 from random import randint, choice as rc, choices
+import cloudinary
+# Import the cloudinary.api for managing assets
+import cloudinary.api
+# Import the cloudinary.uploader for uploading assets
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+from faker import Faker
 
 
 import string
@@ -17,7 +24,7 @@ import string
 # Local imports
 from config import app, db, api
 # Add your model imports
-from models import User, UserTicket, Event, EventTicket
+from models import User, UserTicket, Event, EventTicket,UserEvent
 
 # Views go here!
 
@@ -32,6 +39,12 @@ BUSINESS_SHORTCODE = "174379"
 PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
 CALLBACK_URL = "https://yourdomain.com/callback"
 
+cloudinary.config(
+    cloud_name="dccwd3mth",
+    api_key="729594172262329",
+    api_secret="P_8-ezHpnjm0vTYbjvz04y5lSYY",
+    secure=True,
+)
 
 
 
@@ -110,15 +123,73 @@ class Events(Resource):
         return make_response(events,200)
 
     def post(self):
+            if 'image' not in request.files:
+                return {"error": "No image file provided"}, 400
+
+            image_file = request.files['image']  # Get the uploaded file
+            
+           
+            upload_result = cloudinary.uploader.upload(
+                image_file,
+                transformation=[
+                    {"width": 500, "height": 500, "crop": "fill", "gravity": "auto"}
+                ]
+            )
+
+            
+            name = request.form.get("name")
+            description = request.form.get("description")
+            date = request.form.get("date")
+            time = request.form.get("time")
+            location = request.form.get("location")
+
+            
+            if not all([name, description, date, time, location]):
+                return {"error": "Missing event details"}, 400
+
+            
+            new_event = Event(
+                name=name,
+                description=description,
+                date=date,
+                time=time,
+                image=upload_result["secure_url"], 
+                location=location,
+            )
+            db.session.add(new_event)
+            db.session.commit()
+
+            return make_response(new_event.to_dict(), 201)
+    
+class EventTickets(Resource):
+    def post(self):
         data = request.get_json()
-        new_event = Event(
-            name = data['name'],
-            time = data['time'],
-            location = data['location']
+
+        new_event_ticket = EventTicket(
+            event_id=data['event_id'],
+            ticket_type=data['ticket_type'],
+            price=data['price'],
+            available_quantity=data['available_quantity'],
+            sale_end_date=Faker().date_between(start_date="today", end_date="+60d"),
         )
-        db.session.add(new_event)
+        db.session.add(new_event_ticket)
         db.session.commit()
-        return make_response( new_event.to_dict(), 201)
+
+        return make_response(new_event_ticket.to_dict(), 201)
+
+class UserEvents(Resource):
+    def post(self):
+        data = request.get_json()
+
+        new_user_event = UserEvent(
+            user_id = data['user_id'],
+            event_id = data['event_id'],
+        )
+        db.session.add(new_user_event)
+        db.session.commit()
+
+        return make_response(new_user_event.to_dict(),201)
+
 
 class EventByID(Resource):
     def get(self, id):
@@ -251,6 +322,8 @@ api.add_resource(Logout, '/logout')
 api.add_resource(get_token, '/get-token')
 api.add_resource(stk_push,'/stk-push')
 api.add_resource(HandleUserTickets, '/user-tickets')
+api.add_resource(EventTickets,'/event-tickets')
+api.add_resource(UserEvents, '/user-events')
 
 
 

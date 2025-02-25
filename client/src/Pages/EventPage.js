@@ -13,7 +13,7 @@ function EventPage() {
   const [phoneNumber, setPhoneNumber] = useState(254);
   const [errors, setErrors] = useState("");
   const [purchasebtn, setPurchasebtn] = useState("purchase tickets")
-  let [onLogin, user] = useOutletContext();
+  let [onLogin, user,check_session] = useOutletContext();
 
   useEffect(() => {
     fetch(`/events/${id}`)
@@ -64,6 +64,7 @@ function EventPage() {
       setErrors("An error occurred. Please try again.");
     }
     setPurchasebtn("Purchase Tikcets")
+    check_session()
   }
 
   function createUserTicket() {

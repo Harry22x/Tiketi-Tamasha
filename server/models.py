@@ -10,7 +10,7 @@ from sqlalchemy.orm import validates
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     
-    serialize_rules = ('-user_tickets.user',)
+    serialize_rules = ('-user_tickets.user','-user_events,user')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -20,6 +20,9 @@ class User(db.Model, SerializerMixin):
 
     user_tickets = db.relationship(
         'UserTicket', back_populates='user', cascade='all, delete-orphan'
+    )
+    user_events = db.relationship(
+        'UserEvent', back_populates = 'user', cascade = 'all, delete-orphan'
     )
 
     @hybrid_property
@@ -103,7 +106,7 @@ class EventTicket(db.Model, SerializerMixin):
 class Event(db.Model, SerializerMixin):
     __tablename__ = 'events'
     
-    serialize_rules = ('-event_tickets.event',)
+    serialize_rules = ('-event_tickets.event','-user_events.event')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -116,4 +119,24 @@ class Event(db.Model, SerializerMixin):
 
     event_tickets = db.relationship(
         'EventTicket', back_populates='event', cascade='all, delete-orphan'
+    )
+    user_events = db.relationship(
+        'UserEvent', back_populates = 'event', cascade = 'all, delete-orphan'
+    )
+
+class UserEvent(db.Model,SerializerMixin):
+    __tablename__ = 'user_events'
+   
+    serialize_rules = ('-user.user_events','-event.user_events')
+
+    id  = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+
+    user = db.relationship(
+        'User', back_populates='user_events'
+    )
+
+    event = db.relationship(
+        'Event', back_populates='user_events'
     )

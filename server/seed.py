@@ -9,7 +9,7 @@ import string
 from faker import Faker
 
 # Local imports
-from models import db,User, UserTicket, Event, EventTicket
+from models import db,User, UserTicket, Event, EventTicket,UserEvent
 from app import app
 
 if __name__ == "__main__":
@@ -21,6 +21,7 @@ if __name__ == "__main__":
         EventTicket.query.delete()
         Event.query.delete()
         User.query.delete()
+        UserEvent.query.delete()
 
         print("Creating users...")
         users = []

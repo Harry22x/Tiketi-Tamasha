@@ -2,8 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import './Navbar.css'
 function Navbar({setUser,user}) {
+
+
   function handleLogoutClick() {
-    fetch("https://tiketi-tamashafrunt.onrender.com/logout", { method: "DELETE" }).then((r) => {
+    fetch("/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
         setUser(null);
       }
@@ -13,7 +15,7 @@ function Navbar({setUser,user}) {
     <>
     <header className="header">
       <Link to = {`/`}>
-        <a href="#" className="logo-link">
+        <a  className="logo-link">
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/f0d53468f8408c53aa2c9f2d0a86e6331b6609ac6744dc41946929048f6b8408?placeholderIfAbsent=true"
             alt="Eventick Logo"
@@ -27,7 +29,7 @@ function Navbar({setUser,user}) {
         </a></Link>
         <nav className="nav">
           <Link to={`/more-events`}> <div className="nav-link">
-                  <a href="/events" >  
+                  <a>  
                   Tickets
                   </a>
                   </div>
@@ -35,18 +37,25 @@ function Navbar({setUser,user}) {
           <a href="#footer" className="nav-link">
             Contact
           </a>
-          {user? (<button className="login-btn" onClick={handleLogoutClick}>Log out</button>):(         <Link to={`/login`}>
-          
-          <a href="#" className="login-btn">
-            Login
-          </a></Link>)}
- 
-          {user? (null):(
+          {user? (
+             <Link to={`/profile`}> <div className="nav-link">
+             <a  >  
+             Account
+             </a>
+             </div>
+     </Link>
+          ):(
                       <Link to = {`/signup`}>
-                      <a href="#" className="sign-btn">
+                      <a  className="sign-btn">
                         Sign Up
                       </a></Link>
           )}
+          {user? (<button className="login-btn" onClick={handleLogoutClick}>Log out</button>):(         <Link to={`/login`}>
+          
+          <a  className="login-btn">
+            Login
+          </a></Link>)}
+ 
 
         </nav>
       </header>
