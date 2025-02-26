@@ -1,20 +1,20 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./Pages/Footer";
 
 function App() {
   const [user, setUser] = useState(null);
+  const isMounted = useRef(true); // Prevent state updates on unmounted component
 
   const getToken = () => localStorage.getItem("jwtToken");
 
-  // Wrap checkSession with useCallback to prevent unnecessary re-creation
+  // Optimized checkSession function
   const checkSession = useCallback(async () => {
     const token = getToken();
-
     if (!token) {
       console.warn("No JWT token found. User not authenticated.");
-      setUser(null); // Ensure user state is cleared if token is missing
+      if (isMounted.current) setUser(null);
       return;
     }
 
@@ -22,33 +22,45 @@ function App() {
       const response = await fetch("/check_session", {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         credentials: "include",
       });
 
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        return userData;
-      } else {
+      if (!response.ok) {
         console.error("Session check failed:", response.statusText);
-        localStorage.removeItem("jwtToken"); // Remove invalid token
-        setUser(null); // Clear user state
+        localStorage.removeItem("jwtToken");
+        if (isMounted.current) setUser(null);
+        return;
       }
+
+      const userData = await response.json();
+      if (isMounted.current) setUser(userData);
     } catch (error) {
       console.error("Error checking session:", error);
-      localStorage.removeItem("jwtToken"); // Ensure token is removed on error
-      setUser(null);
+      localStorage.removeItem("jwtToken");
+      if (isMounted.current) setUser(null);
     }
   }, []);
 
   useEffect(() => {
+    isMounted.current = true;
     checkSession();
 
-    // Cleanup function (useful if component unmounts before fetch completes)
-    return () => setUser(null);
+    // Listen for token changes in localStorage (login/logout)
+    const handleStorageChange = (event) => {
+      if (event.key === "jwtToken") {
+        checkSession();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      isMounted.current = false;
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, [checkSession]);
 
   return (

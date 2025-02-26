@@ -1,33 +1,31 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export default function LoginPage() {
-  const { register, handleSubmit, formState: { errors }, setError } = useForm();
-  const navigate = useNavigate();
-  const [setUser] = useOutletContext(); // Corrected to extract setUser
+function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
 
   const onSubmit = async (data) => {
     try {
       const response = await fetch("/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
+        throw new Error("Invalid username or password");
       }
 
-      const { token, user } = await response.json();
-      
-      // Store JWT securely
-      localStorage.setItem("jwtToken", token);
-      setUser(user); // Update user state
-
-      navigate("/");
+      // Handle successful login (e.g., store token, redirect)
+      console.log("Login successful");
     } catch (error) {
       setError("apiError", { message: error.message });
     }
@@ -78,3 +76,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default LoginPage;

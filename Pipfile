@@ -15,5 +15,3 @@ flask-cors = "*"
 faker = "*"
 flask-bcrypt = "*"
 requests = "*"
-
-

@@ -1,25 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import './Navbar.css';
+import "./Navbar.css";
 
 function Navbar({ setUser, user }) {
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(user);
+  const [isFading, setIsFading] = useState(false); // Controls fade-out effect
+
+  useEffect(() => {
+    setCurrentUser(user);
+  }, [user]);
 
   function handleLogoutClick() {
-    fetch("/logout", { 
-      method: "DELETE", 
-      credentials: "include"
-    }).then((response) => {
-      if (response.ok) {
-        localStorage.removeItem("jwtToken"); // Clear JWT from storage
-        setUser(null);
-        navigate("/login"); // Redirect to login page
-      }
-    });
+    setIsFading(true); // Start fade-out effect
+
+    setTimeout(() => {
+      fetch("/logout", { 
+        method: "DELETE", 
+        credentials: "include"
+      }).then((response) => {
+        if (response.ok) {
+          localStorage.removeItem("jwtToken"); 
+          setUser(null);
+          setCurrentUser(null); 
+          setIsFading(false); // Reset fade state after logout
+          navigate("/login"); 
+        }
+      });
+    }, 300); // Delay logout to allow transition
   }
 
   return (
-    <header className="header">
+    <header className={`header ${isFading ? "fade-out" : "fade-in"}`}>
       <Link to="/" className="logo-link">
         <img
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/f0d53468f8408c53aa2c9f2d0a86e6331b6609ac6744dc41946929048f6b8408?placeholderIfAbsent=true"
@@ -35,9 +47,12 @@ function Navbar({ setUser, user }) {
 
       <nav className="nav">
         <Link to="/more-events" className="nav-link">Tickets</Link>
-        <a href="#footer" className="nav-link">Contact</a>
+        {/* Fix: Use <button> instead of <a> for internal page scrolling */}
+        <button className="nav-link" onClick={() => document.getElementById("footer")?.scrollIntoView({ behavior: "smooth" })}>
+          Contact
+        </button>
 
-        {user ? (
+        {currentUser ? (
           <>
             <button className="login-btn" onClick={handleLogoutClick}>Log out</button>
           </>

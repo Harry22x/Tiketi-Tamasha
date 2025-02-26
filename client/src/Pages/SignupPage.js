@@ -10,7 +10,7 @@ const SignupPage = () => {
   const [role, setRole] = useState("Attendee");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [setUser] = useOutletContext(); // Corrected to extract setUser
+  const [setUser] = useOutletContext(); // Corrected destructuring
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -28,16 +28,15 @@ const SignupPage = () => {
         body: JSON.stringify({ username, email, password, role }),
       });
 
+      const data = await response.json(); // Store response JSON only once
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Signup failed. Try again.");
+        throw new Error(data.message || "Signup failed. Try again.");
       }
 
-      const { token, user } = await response.json();
-
       // Store JWT securely
-      localStorage.setItem("jwtToken", token);
-      setUser(user); // Update user state
+      localStorage.setItem("jwtToken", data.token);
+      setUser(data.user); // Update user state
 
       navigate("/");
     } catch (err) {
