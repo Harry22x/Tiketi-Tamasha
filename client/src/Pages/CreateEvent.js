@@ -21,7 +21,7 @@ const CreateEvent = () => {
 // })
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
-   let [onLogin,user] = useOutletContext();
+   let [onLogin,user,check_session] = useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -127,6 +127,7 @@ const CreateEvent = () => {
       console.log("ok")
       setUploading(false)
       navigate(`/events/${data.id}`)
+      check_session()
     }
   }
     catch(error){

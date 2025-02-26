@@ -126,7 +126,7 @@ class Events(Resource):
             if 'image' not in request.files:
                 return {"error": "No image file provided"}, 400
 
-            image_file = request.files['image']  # Get the uploaded file
+            image_file = request.files['image'] 
             
            
             upload_result = cloudinary.uploader.upload(
@@ -160,7 +160,59 @@ class Events(Resource):
             db.session.commit()
 
             return make_response(new_event.to_dict(), 201)
+class GetEventByID(Resource):
+    def get(self, id):
+        event = Event.query.get(id)
+        if event:
+            return make_response(event.to_dict(),200)
+        else:
+            return make_response({"error":"Event does not exist"},404)
     
+    def patch(self, id):
+        event = Event.query.filter_by(id=id).first()
+        if not event:
+            return {"error": "Event not found"}, 404
+
+        
+        name = request.form.get("name")
+        description = request.form.get("description")
+        date = request.form.get("date")
+        time = request.form.get("time")
+        location = request.form.get("location")
+
+        
+        if "image" in request.files:
+            image_file = request.files["image"]
+            upload_result = cloudinary.uploader.upload(
+                image_file,
+                transformation=[{"width": 500, "height": 500, "crop": "fill", "gravity": "auto"}]
+            )
+            event.image = upload_result["secure_url"]
+
+       
+        if name:
+            event.name = name
+        if description:
+            event.description = description
+        if date:
+            event.date = date
+        if time:
+            event.time = time
+        if location:
+            event.location = location
+
+        db.session.commit()
+        return make_response(event.to_dict(), 200) 
+    def delete(self,id):
+        event = Event.query.filter_by(id=id).first()
+        db.session.delete(event)
+        db.session.commit()
+
+        response = make_response("",204)
+        return response
+
+
+
 class EventTickets(Resource):
     def post(self):
         data = request.get_json()
@@ -191,13 +243,7 @@ class UserEvents(Resource):
         return make_response(new_user_event.to_dict(),201)
 
 
-class EventByID(Resource):
-    def get(self, id):
-        event = Event.query.get(id)
-        if event:
-            return make_response(event.to_dict(),200)
-        else:
-            return make_response({"error":"Event does not exist"},404)
+
 class Signup(Resource):
     pass
     def post(self):
@@ -313,8 +359,10 @@ class HandleUserTickets(Resource):
         db.session.add(new_user_ticket)
         db.session.commit()
 
+
+
 api.add_resource(Events,'/events')
-api.add_resource(EventByID,'/events/<int:id>')
+api.add_resource(GetEventByID,'/events/<int:id>')
 api.add_resource(Signup,'/signup')
 api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
@@ -324,6 +372,7 @@ api.add_resource(stk_push,'/stk-push')
 api.add_resource(HandleUserTickets, '/user-tickets')
 api.add_resource(EventTickets,'/event-tickets')
 api.add_resource(UserEvents, '/user-events')
+
 
 
 
