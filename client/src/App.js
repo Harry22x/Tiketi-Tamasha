@@ -8,15 +8,16 @@ function App() {
   const [user, setUser] = useState(null);
 
 
-  async function check_session() {
+  async function check_session(token) {
     try {
       const response = await fetch("/check_session", {
         method: "GET",
-        credentials: "include"
+        Authorization: token,
       });
 
       if (response.ok) {
         const userData = await response.json();
+        console.log(userData)
         setUser(userData);
         return userData; 
       }

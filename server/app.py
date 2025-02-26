@@ -17,6 +17,7 @@ import cloudinary.api
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 from faker import Faker
+from flask_jwt_extended import  create_access_token, jwt_required, get_jwt_identity
 
 
 import string
@@ -245,90 +246,57 @@ class UserEvents(Resource):
 
 
 class Signup(Resource):
-    pass
     def post(self):
         data = request.get_json()
-        
-        
         errors = {}
-        
-       
+
         if not data.get('username'):
             errors['username'] = 'Username is required'
-        
-        
         if not data.get('password'):
             errors['password'] = 'Password is required'
-        # elif len(data['password']) < 6:
-        #     errors['password'] = 'Password must be at least 6 characters'
         
-       
         if errors:
             return {'errors': errors}, 422
-        
+
         try:
             new_user = User(
                 username=data['username'],
-                email = data['email'],
-                role = data['role'],
-                
+                email=data.get('email', ''),
+                role=data.get('role', '')
             )
-           
-            new_user.password_hash = data['password']
-            
-           
+            new_user.password_hash = data['password']  # Assuming you hash passwords
+
             db.session.add(new_user)
             db.session.commit()
-        except ValueError as e:
-            
-            return {'errors': {'username': str(e)}}, 422
-        except Exception as e:
+        except Exception:
             db.session.rollback()
             return {'errors': {'database': 'Error saving user'}}, 422
-        
-      
-        session['user_id'] = new_user.id
-        session.permanent = True
-        
-       
-        return new_user.to_dict(), 201
+
+        return  new_user.to_dict(), 201
+
     
 class Login(Resource):
     def post(self):
         data = request.get_json()
-        
         user = User.query.filter_by(username=data.get('username')).first()
-        
-        
-      
+
         if user and user.authenticate(data.get('password', '')):
-            
-            session['user_id'] = user.id
-            session.permanent = True
-            
-           
-            return user.to_dict(), 200
-        
-        #print(session['user_id'])
-        return {'error': ['Invalid username or password']}, 401
+            access_token = create_access_token(identity=user.id)  # Generate JWT token
+            return {'access_token': access_token}, 200
+
+        return {'error': 'Invalid username or password'}, 401
+    
+
+
 class CheckSession(Resource):
-    pass
+    @jwt_required()
     def get(self):
-      
-        user_id = session.get('user_id')
-        # logging.debug(f"Session user_id: {user_id}")
-        
-        if  user_id:
-            user = User.query.filter_by(id=user_id).first()              
+        user_id = get_jwt_identity()  # Get user ID from token
+        user = User.query.get(user_id)
 
-            serialized_user = user.to_dict()
-
-            
-            return serialized_user, 200
-            
-        
-        else:
-         return {'error': 'Unauthorized'}, 401
+        if user:
+            return user.to_dict(), 200
+        return {'error': 'Unauthorized'}, 401
 
 
 

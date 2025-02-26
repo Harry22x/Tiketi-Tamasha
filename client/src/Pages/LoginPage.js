@@ -8,7 +8,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
-  let [onLogin,user] = useOutletContext();
+  let [onLogin,user,check_session] = useOutletContext();
  
   const onSubmit = async (data) => {
     try {
@@ -24,7 +24,7 @@ export default function LoginPage() {
       }
 
      else{
-      response.json().then((user) => onLogin(user)).then(navigate("/"))
+      response.json().then((data) => check_session(data.access_token)).then(navigate("/"))
       };
     } catch (error) {
       setError("apiError", { message: error.message });
