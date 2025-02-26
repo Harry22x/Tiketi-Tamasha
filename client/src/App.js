@@ -1,77 +1,40 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Outlet } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./Pages/Footer";
+import React, { useEffect, useState } from "react";
+import LandingPage from './Pages/LandingPage';  
+import Navbar from './components/Navbar';import { Outlet } from 'react-router-dom';
+import Reviews from './components/Reviews';
+import Footer from './Pages/Footer';
 
 function App() {
   const [user, setUser] = useState(null);
-  const isMounted = useRef(true); // Prevent state updates on unmounted component
 
-  const getToken = () => localStorage.getItem("jwtToken");
 
-  // Optimized checkSession function
-  const checkSession = useCallback(async () => {
-    const token = getToken();
-    if (!token) {
-      console.warn("No JWT token found. User not authenticated.");
-      if (isMounted.current) setUser(null);
-      return;
-    }
-
+  async function check_session() {
     try {
       const response = await fetch("/check_session", {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+        credentials: "include"
       });
 
-      if (!response.ok) {
-        console.error("Session check failed:", response.statusText);
-        localStorage.removeItem("jwtToken");
-        if (isMounted.current) setUser(null);
-        return;
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        return userData; 
       }
-
-      const userData = await response.json();
-      if (isMounted.current) setUser(userData);
     } catch (error) {
       console.error("Error checking session:", error);
-      localStorage.removeItem("jwtToken");
-      if (isMounted.current) setUser(null);
     }
-  }, []);
-
-  useEffect(() => {
-    isMounted.current = true;
-    checkSession();
-
-    // Listen for token changes in localStorage (login/logout)
-    const handleStorageChange = (event) => {
-      if (event.key === "jwtToken") {
-        checkSession();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      isMounted.current = false;
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [checkSession]);
-
+  }
+  
+  useEffect(check_session, []);
   return (
     <>
-      <header>
-        <Navbar setUser={setUser} user={user} />
-      </header>
-      <Outlet context={[setUser, user, checkSession]} />
-      <Footer />
+    <header>< Navbar setUser={setUser} user={user}/></header>
+    <Outlet context ={[setUser, user,check_session]}/>
+    < Footer/>
+  
+    
     </>
-  );
+  )
 }
 
 export default App;

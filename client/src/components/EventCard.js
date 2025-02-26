@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const EventCard = ({ id, name, date, time, image, description }) => (
+const EventCard = ({ id, name, date, time, image }) => (
   <Link to={`/events/${id}`}>
 <div className="bg-white p-3 shadow-md h-full flex flex-col justify-between w-[27rem] mx-auto">
       <img src={image} alt={name} className="w-full rounded-md" />

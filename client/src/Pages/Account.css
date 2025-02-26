@@ -1,0 +1,10 @@
+
+body  {
+    background-color: white;
+}
+
+.attending-card{
+    background-color: white;
+    text-align: left;
+    display: flex;
+}

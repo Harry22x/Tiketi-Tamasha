@@ -16,18 +16,19 @@ const CreateEvent = () => {
       vip: { price: "", quantity: "" },
     },
   });
+// const [ticketsData,setTicketsData] = useState({
 
+// })
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [userRole, setUserRole] = useState("");
-   let [onLogin,user] = useOutletContext();
+   let [onLogin,user,check_session] = useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
     
-
+        console.log(user)
         if (user.role !== "Organizer") {
           alert("Access denied! Only organizers can create events.");
           navigate("/");
@@ -55,46 +56,85 @@ const CreateEvent = () => {
       ...eventData,
       tickets: {
         ...eventData.tickets,
-        [category]: { ...eventData.tickets[category], [name]: name === "price" ? `$${value}` : value.replace(/[^0-9]/g, "") },
+        [category]: { ...eventData.tickets[category], [name]: name === "price" ? `${value}` : value.replace(/[^0-9]/g, "") },
       },
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUploading(true);
     setError("");
+    setUploading(true)
 
-    if (userRole !== "Organizer") {
-      setError("You do not have permission to create an event.");
-      setUploading(false);
-      return;
-    }
 
+    const formData = new FormData();
+    formData.append("image", eventData.image);
+    formData.append("name", eventData.name);
+    formData.append("description", eventData.description);
+    formData.append("location", eventData.location);
+    formData.append("date", eventData.date);
+    formData.append("time", eventData.time); 
+  
     try {
-      const formData = new FormData();
-      Object.keys(eventData).forEach((key) => {
-        if (key !== "tickets") {
-          formData.append(key, eventData[key]);
+        const response = await fetch("/events", {
+            method: "POST",
+            body: formData, 
+        })
+
+        const data = await response.json();
+        //console.log("Upload successful:", data);
+        if(response.ok){
+          createEventTicket(data)
+          createUserEvent(data)
         }
-      });
-      formData.append("tickets", JSON.stringify(eventData.tickets));
+    } catch (error) {
+        console.error("Upload failed:", error);
+    } 
+};
 
-      const response = await fetch("https://your-backend.com/api/events", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("Event creation failed.");
-      const createdEvent = await response.json();
-      alert("Event created successfully!");
-      navigate(`/events/${createdEvent.id}`);
-    } catch (err) {
-      setError(err.message);
+   function createEventTicket(data){
+    for(let ticket in eventData.tickets){
+   try{ const response =  fetch("/event-tickets",{
+      method:"POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event_id: data.id,
+        ticket_type: ticket,
+        price: Number(eventData.tickets[ticket].price),
+        available_quantity:Number(eventData.tickets[ticket].quantity)
+      })
+    })}
+    catch(error){
+      console.log(error)
     }
-    setUploading(false);
-  };
+  }}
+
+  function createUserEvent(data){
+
+    try{ const response = fetch('/user-events',{
+      method:"POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        event_id: data.id
+      })
+    })
+    if(response){
+      console.log("ok")
+      setUploading(false)
+      navigate(`/events/${data.id}`)
+      check_session()
+    }
+  }
+    catch(error){
+      console.log(error)
+    }
+
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pt-20 bg-gradient-to-br from-blue-600 to-purple-700 p-8">
@@ -113,7 +153,7 @@ const CreateEvent = () => {
           <input type="file" name="image" accept="image/*" onChange={handleChange} required className="w-full px-4 py-3 border rounded-lg shadow-sm bg-white" />
 
           <div className="space-y-4">
-            <h3 className="text-2xl font-semibold text-gray-800">Ticket Pricing</h3>
+            <h3 className="text-2xl font-semibold text-gray-800">Ticket Pricing(KES)</h3>
             {Object.keys(eventData.tickets).map((category) => (
               <div key={category} className="grid grid-cols-2 gap-4">
                 <input

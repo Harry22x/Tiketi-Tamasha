@@ -4,12 +4,21 @@
 
 # Remote library imports
 from flask import request,make_response,session,jsonify
+from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 import os
 import requests
 import base64
 from datetime import datetime
 from random import randint, choice as rc, choices
+import cloudinary
+# Import the cloudinary.api for managing assets
+import cloudinary.api
+# Import the cloudinary.uploader for uploading assets
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+from faker import Faker
+import traceback
 
 
 import string
@@ -17,7 +26,7 @@ import string
 # Local imports
 from config import app, db, api
 # Add your model imports
-from models import User, UserTicket, Event, EventTicket
+from models import User, UserTicket, Event, EventTicket,UserEvent
 
 # Views go here!
 
@@ -32,6 +41,12 @@ BUSINESS_SHORTCODE = "174379"
 PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
 CALLBACK_URL = "https://yourdomain.com/callback"
 
+cloudinary.config(
+    cloud_name="dccwd3mth",
+    api_key="729594172262329",
+    api_secret="P_8-ezHpnjm0vTYbjvz04y5lSYY",
+    secure=True,
+)
 
 
 
@@ -110,71 +125,198 @@ class Events(Resource):
         return make_response(events,200)
 
     def post(self):
-        data = request.get_json()
-        new_event = Event(
-            name = data['name'],
-            time = data['time'],
-            location = data['location']
-        )
-        db.session.add(new_event)
-        db.session.commit()
-        return make_response( new_event.to_dict(), 201)
+            if 'image' not in request.files:
+                return {"error": "No image file provided"}, 400
 
-class EventByID(Resource):
+            image_file = request.files['image'] 
+            
+           
+            upload_result = cloudinary.uploader.upload(
+                image_file,
+                transformation=[
+                    {"width": 500, "height": 500, "crop": "fill", "gravity": "auto"}
+                ]
+            )
+
+            
+            name = request.form.get("name")
+            description = request.form.get("description")
+            date = request.form.get("date")
+            time = request.form.get("time")
+            location = request.form.get("location")
+
+            
+            if not all([name, description, date, time, location]):
+                return {"error": "Missing event details"}, 400
+
+            
+            new_event = Event(
+                name=name,
+                description=description,
+                date=date,
+                time=time,
+                image=upload_result["secure_url"], 
+                location=location,
+            )
+            db.session.add(new_event)
+            db.session.commit()
+
+            return make_response(new_event.to_dict(), 201)
+class GetEventByID(Resource):
     def get(self, id):
         event = Event.query.get(id)
         if event:
             return make_response(event.to_dict(),200)
         else:
             return make_response({"error":"Event does not exist"},404)
-class Signup(Resource):
-    pass
+    
+    def patch(self, id):
+        event = Event.query.filter_by(id=id).first()
+        if not event:
+            return {"error": "Event not found"}, 404
+
+        
+        name = request.form.get("name")
+        description = request.form.get("description")
+        date = request.form.get("date")
+        time = request.form.get("time")
+        location = request.form.get("location")
+
+        
+        if "image" in request.files:
+            image_file = request.files["image"]
+            upload_result = cloudinary.uploader.upload(
+                image_file,
+                transformation=[{"width": 500, "height": 500, "crop": "fill", "gravity": "auto"}]
+            )
+            event.image = upload_result["secure_url"]
+
+       
+        if name:
+            event.name = name
+        if description:
+            event.description = description
+        if date:
+            event.date = date
+        if time:
+            event.time = time
+        if location:
+            event.location = location
+
+        db.session.commit()
+        return make_response(event.to_dict(), 200) 
+    def delete(self,id):
+        event = Event.query.filter_by(id=id).first()
+        db.session.delete(event)
+        db.session.commit()
+
+        response = make_response("",204)
+        return response
+
+
+
+class EventTickets(Resource):
     def post(self):
         data = request.get_json()
+
+        new_event_ticket = EventTicket(
+            event_id=data['event_id'],
+            ticket_type=data['ticket_type'],
+            price=data['price'],
+            available_quantity=data['available_quantity'],
+            sale_end_date=Faker().date_between(start_date="today", end_date="+60d"),
+        )
+        db.session.add(new_event_ticket)
+        db.session.commit()
+
+        return make_response(new_event_ticket.to_dict(), 201)
+
+class UserEvents(Resource):
+    def post(self):
+        data = request.get_json()
+
+        new_user_event = UserEvent(
+            user_id = data['user_id'],
+            event_id = data['event_id'],
+        )
+        db.session.add(new_user_event)
+        db.session.commit()
+
+        return make_response(new_user_event.to_dict(),201)
+
+
+
+class Signup(Resource):
+    def post(self):
+        data = request.get_json()
+      
         
-        
+       
         errors = {}
-        
-       
-        if not data.get('username'):
-            errors['username'] = 'Username is required'
-        
-        
-        if not data.get('password'):
-            errors['password'] = 'Password is required'
-        # elif len(data['password']) < 6:
-        #     errors['password'] = 'Password must be at least 6 characters'
-        
-       
+        for field in ['username', 'email', 'password', 'role']:
+            if not data.get(field):
+                errors[field] = f'{field.capitalize()} is required'
+                
         if errors:
+            print(f"Validation errors: {errors}")
             return {'errors': errors}, 422
-        
+            
         try:
+            
+            existing_user = User.query.filter(User.username == data['username']).first()
+            if existing_user:
+                errors['username'] = f"Username '{data['username']}' already exists."
+                print(f"Username already exists: {data['username']}")
+                print(errors)
+                return {'errors': errors}, 422
+                
+            existing_email = User.query.filter(User.email == data['email']).first()
+            if existing_email:
+                errors['email'] = f"Email '{data['email']}' already exists."
+                print(f"Email already exists: {data['email']}")
+                return {'errors': errors}, 422
+            
+          
             new_user = User(
                 username=data['username'],
-                email = data['email'],
-                role = data['role'],
-                
+                email=data['email'],
+                role=data['role'],
             )
-           
+            
             new_user.password_hash = data['password']
             
-           
+            
             db.session.add(new_user)
             db.session.commit()
-        except ValueError as e:
             
-            return {'errors': {'username': str(e)}}, 422
+          
+            session['user_id'] = new_user.id
+            session.permanent = True
+            
+            print(f"User created successfully: {new_user.id}")
+            return new_user.to_dict(), 201
+            
+        except ValueError as e:
+          
+            error_message = str(e)
+            print(f"ValueError during signup: {error_message}")
+            
+
+            if "username" in error_message.lower():
+                errors['username'] = error_message
+            elif "email" in error_message.lower():
+                errors['email'] = error_message
+            else:
+                errors['validation'] = error_message
+                
+            return {'errors': errors}, 422
+            
         except Exception as e:
             db.session.rollback()
-            return {'errors': {'database': 'Error saving user'}}, 422
-        
-      
-        session['user_id'] = new_user.id
-        session.permanent = True
-        
-       
-        return new_user.to_dict(), 201
+            error_detail = str(e)
+            print(f"Exception during signup: {error_detail}")
+            print(traceback.format_exc())
+            return {'errors': {'database': f'Error saving user: {error_detail}'}}, 422
     
 class Login(Resource):
     def post(self):
@@ -242,8 +384,10 @@ class HandleUserTickets(Resource):
         db.session.add(new_user_ticket)
         db.session.commit()
 
+
+
 api.add_resource(Events,'/events')
-api.add_resource(EventByID,'/events/<int:id>')
+api.add_resource(GetEventByID,'/events/<int:id>')
 api.add_resource(Signup,'/signup')
 api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
@@ -251,6 +395,9 @@ api.add_resource(Logout, '/logout')
 api.add_resource(get_token, '/get-token')
 api.add_resource(stk_push,'/stk-push')
 api.add_resource(HandleUserTickets, '/user-tickets')
+api.add_resource(EventTickets,'/event-tickets')
+api.add_resource(UserEvents, '/user-events')
+
 
 
 

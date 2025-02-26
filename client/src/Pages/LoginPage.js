@@ -1,8 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-
+import { useNavigate,useOutletContext } from "react-router-dom";
 function LoginPage() {
+  const navigate = useNavigate();
+  let [onLogin,user] = useOutletContext();
   const {
     register,
     handleSubmit,
@@ -14,18 +16,18 @@ function LoginPage() {
     try {
       const response = await fetch("/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        throw new Error("Invalid username or password");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
       }
 
-      // Handle successful login (e.g., store token, redirect)
-      console.log("Login successful");
+     else{
+      response.json().then((user) => onLogin(user)).then(navigate("/"))
+      };
     } catch (error) {
       setError("apiError", { message: error.message });
     }
