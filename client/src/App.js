@@ -10,23 +10,40 @@ function App() {
 
   async function check_session(token) {
     try {
-      const response = await fetch("/check_session", {
-        method: "GET",
-        Authorization: token,
-      });
+      
 
-      if (response.ok) {
-        const userData = await response.json();
-        console.log(userData)
-        setUser(userData);
-        return userData; 
-      }
+        const response = await fetch("/check_session", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (response.ok) {
+            const userData = await response.json();
+            
+            setUser(userData);
+            return userData;
+        } else {
+            console.error("Session check failed:", response.status);
+            const errorData = await response.json(); 
+            console.error("Error data:", errorData);
+            setUser(null);
+        }
     } catch (error) {
-      console.error("Error checking session:", error);
+        console.error("Error checking session:", error);
     }
-  }
-  
-  useEffect(check_session, []);
+}
+
+useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+        check_session(token);
+    }
+}, []);
+
+
   return (
     <>
     <header>< Navbar setUser={setUser} user={user}/></header>

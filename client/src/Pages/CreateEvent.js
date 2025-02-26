@@ -127,7 +127,7 @@ const CreateEvent = () => {
       console.log("ok")
       setUploading(false)
       navigate(`/events/${data.id}`)
-      check_session()
+      check_session(localStorage.getItem("jwt"))
     }
   }
     catch(error){

@@ -64,7 +64,7 @@ function EventPage() {
       setErrors("An error occurred. Please try again.");
     }
     setPurchasebtn("Purchase Tikcets")
-    check_session()
+    check_session(localStorage.getItem("jwt"))
   }
 
   function createUserTicket() {

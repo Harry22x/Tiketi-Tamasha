@@ -17,20 +17,24 @@ export default function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Login failed");
       }
-
-     else{
-      response.json().then((data) => check_session(data.access_token)).then(navigate("/"))
-      };
+  
+      const responseData = await response.json();
+      const token = responseData.access_token; // Get the JWT token
+  
+      if (token) {
+        localStorage.setItem("jwt", token);  // Store the token
+        check_session(token);  // Call check_session with the token
+        navigate("/");
+      }
     } catch (error) {
       setError("apiError", { message: error.message });
     }
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">

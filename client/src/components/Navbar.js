@@ -8,6 +8,7 @@ function Navbar({setUser,user}) {
     fetch("/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
         setUser(null);
+        localStorage.setItem("jwt", null)
       }
     });
   }

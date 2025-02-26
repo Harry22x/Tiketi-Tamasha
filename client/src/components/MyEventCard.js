@@ -54,7 +54,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
         const data = await response.json();
         console.log("Update successful:", data);
         setIsEditing(false);
-        check_session(); 
+        check_session(localStorage.getItem("jwt")); 
       } catch (error) {
         setErrors([error.message]);
       } finally {
@@ -73,7 +73,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(() => check_session());
+    }).then(() =>check_session(localStorage.getItem("jwt")));
   }
 
   return (

@@ -271,8 +271,10 @@ class Signup(Resource):
         except Exception:
             db.session.rollback()
             return {'errors': {'database': 'Error saving user'}}, 422
+        print(new_user)
+        access_token = create_access_token(identity=str(new_user.id))  # Generate JWT token
+        return {'access_token': access_token}, 200
 
-        return  new_user.to_dict(), 201
 
     
 class Login(Resource):
@@ -281,7 +283,7 @@ class Login(Resource):
         user = User.query.filter_by(username=data.get('username')).first()
 
         if user and user.authenticate(data.get('password', '')):
-            access_token = create_access_token(identity=user.id)  # Generate JWT token
+            access_token = create_access_token(identity=str(user.id))  # Generate JWT token
             return {'access_token': access_token}, 200
 
         return {'error': 'Invalid username or password'}, 401
@@ -289,15 +291,14 @@ class Login(Resource):
 
 
 class CheckSession(Resource):
-    @jwt_required()
+    @jwt_required()  # Require JWT token
     def get(self):
-        user_id = get_jwt_identity()  # Get user ID from token
+        user_id = get_jwt_identity()  # Extract user ID from token
         user = User.query.get(user_id)
 
         if user:
             return user.to_dict(), 200
         return {'error': 'Unauthorized'}, 401
-
 
 
 class Logout(Resource):

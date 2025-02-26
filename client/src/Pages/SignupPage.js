@@ -11,7 +11,7 @@ const SignupPage = () => {
   const [role, setRole] = useState("Attendee"); // Default role
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  let [onLogin,user] = useOutletContext();
+  let [onLogin,user,check_session] = useOutletContext();
   // const { register, handleSubmit, formState: { errors }, setError } = useForm();
 
   // 🔹 Handle Signup via Backend API
@@ -28,9 +28,14 @@ const SignupPage = () => {
 
       if (!response.ok) throw new Error("Signup failed. Try again.");
 
-      else{
-        response.json().then((user) => onLogin(user)).then(navigate("/"))
-        }; 
+      const responseData = await response.json();
+      const token = responseData.access_token; // Get the JWT token
+  
+      if (token) {
+        localStorage.setItem("jwt", token);  // Store the token
+        check_session(token);  // Call check_session with the token
+        navigate("/");
+      }
     } catch (err) {
       setError(err.message);
     }
