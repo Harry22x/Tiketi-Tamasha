@@ -38,9 +38,10 @@ function Navbar({setUser,user}) {
           <a href="#footer" className="nav-link">
             Contact
           </a>
-          <Link to={`/calender`}>
+          {user? (     <Link to={`/calender`}>
           <a className="nav-link">Calender</a>
-          </Link>
+          </Link>):(null)}
+     
           {user? (
              <Link to={`/profile`}> <div className="nav-link">
              <a  >  

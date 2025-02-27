@@ -4,6 +4,7 @@
 
 # Remote library imports
 from flask import request,make_response,session,jsonify
+from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 import os
 import requests

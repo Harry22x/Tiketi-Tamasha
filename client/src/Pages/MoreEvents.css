@@ -48,3 +48,46 @@
   font-size: 0.875rem;
   color: #555;
 }
+
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 15px auto;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  overflow: hidden;
+  background: white;
+}
+
+.search-bar {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-button {
+  padding: 12px 15px;
+  background: navy;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: gray;
+  margin-top: 15px;
+}
