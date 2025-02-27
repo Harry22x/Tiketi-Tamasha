@@ -9,6 +9,9 @@ import CreateEvent from "./Pages/CreateEvent";
 import MoreEvents from "./Pages/MoreEvents";
 import Account from "./Pages/Account";
 import Calender from "./Pages/Calender";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
+
 const routes = [
   {
     path: "/",
@@ -23,6 +26,8 @@ const routes = [
       { path:"/create-event",element: <CreateEvent /> },
       {path:"/more-events", element:<MoreEvents />},
       { path:"/calender", element:<Calender />},
+      {path:"/forgot-password", element:<ForgotPassword/>},
+      {path:"/reset-password", element:<ResetPassword/>},
     ],
   },
 ];

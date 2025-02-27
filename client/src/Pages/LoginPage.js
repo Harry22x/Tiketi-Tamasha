@@ -20,15 +20,15 @@ export default function LoginPage() {
   
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
+        throw new Error(errorData.error || "Login failed");
       }
   
       const responseData = await response.json();
-      const token = responseData.access_token; // Get the JWT token
+      const token = responseData.access_token; 
   
       if (token) {
-        localStorage.setItem("jwt", token);  // Store the token
-        check_session(token);  // Call check_session with the token
+        localStorage.setItem("jwt", token); 
+        check_session(token);  
         navigate("/");
       }
     } catch (error) {
@@ -74,6 +74,11 @@ export default function LoginPage() {
         <Link to={`/signup`}>
         <p className="mt-4 text-center text-gray-600">
           Don't have an account? <a href="/signup" className="text-blue-500 hover:underline">Sign Up</a>
+        </p>
+        </Link>
+        <Link to={`/forgot-password`}>
+        <p className="mt-4 text-center text-gray-600">
+         <a className="text-blue-500 hover:underline">Forgot password</a>
         </p>
         </Link>
       </div>

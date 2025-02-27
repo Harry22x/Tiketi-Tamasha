@@ -8,13 +8,11 @@ const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Attendee"); // Default role
+  const [role, setRole] = useState("Attendee");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   let [onLogin,user,check_session] = useOutletContext();
-  // const { register, handleSubmit, formState: { errors }, setError } = useForm();
 
-  // 🔹 Handle Signup via Backend API
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
@@ -25,19 +23,23 @@ const SignupPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password, role }),
       });
-
-      if (!response.ok) throw new Error("Signup failed. Try again.");
-
+    
+      if (!response.ok) {
+      const errorData = await response.json(); 
+      console.log(errorData); 
+      setError(errorData.errors || "Signup failed. Please try again."); 
+      return;
+    }
       const responseData = await response.json();
-      const token = responseData.access_token; // Get the JWT token
+      const token = responseData.access_token; 
   
       if (token) {
-        localStorage.setItem("jwt", token);  // Store the token
-        check_session(token);  // Call check_session with the token
+        localStorage.setItem("jwt", token);  
+        check_session(token);  
         navigate("/");
       }
     } catch (err) {
-      setError(err.message);
+      console.log(err.message);
     }
   };
 

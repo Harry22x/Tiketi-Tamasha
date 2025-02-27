@@ -42,7 +42,7 @@ class User(db.Model, SerializerMixin):
         if not username:
             raise ValueError("Username cannot be empty.")
         if User.query.filter(User.username == username).first():
-            raise ValueError(f"Username '{username}' already exists.")
+            raise ValueError(f" Account with Username '{username}' already exists .")
         return username
 
     @validates('email')
@@ -50,7 +50,7 @@ class User(db.Model, SerializerMixin):
         if not email :
             raise ValueError("Invalid email address.")
         if User.query.filter(User.email == email).first():
-            raise ValueError(f"Email '{email}' already exists.")
+            raise ValueError(f"Account with Email '{email}' already exists.")
         return email
 
 class UserTicket(db.Model, SerializerMixin):

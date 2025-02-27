@@ -142,7 +142,7 @@ function EventPage() {
     <div className="event-container">
       <div className="event-header">
         <h1 className="event-title">{event.name}</h1>
-        <p className="event-date">{event.time} {event.date} • {event.location}</p>
+        <p className="event-date">{event.time} {new Date(event.date).toString().split("").splice(0,15).join("")} • {event.location}</p>
       </div>
       <div className="event-content">
         <div className="tickets-section">

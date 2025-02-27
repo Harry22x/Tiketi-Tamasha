@@ -11,14 +11,21 @@ import base64
 from datetime import datetime
 from random import randint, choice as rc, choices
 import cloudinary
-# Import the cloudinary.api for managing assets
+
 import cloudinary.api
-# Import the cloudinary.uploader for uploading assets
+
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 from faker import Faker
 from flask_jwt_extended import  create_access_token, jwt_required, get_jwt_identity
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from datetime import timedelta
 
 import string
 
@@ -28,10 +35,6 @@ from config import app, db, api
 from models import User, UserTicket, Event, EventTicket,UserEvent
 
 # Views go here!
-
-
-
-
 
 
 CONSUMER_KEY = "wrRTjoU6QhClK1Lf8TIJ0sxqJfCvfEgU68jepcKNxi96NHhR"
@@ -47,7 +50,93 @@ cloudinary.config(
     secure=True,
 )
 
+# If modifying these SCOPES, delete the token.json file.
+SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
+def authenticate_gmail():
+    creds = None
+   
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+  
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file('client_secret_419906042570-2p9b0ljl3uhq853oheq403s1hec6pmt8.apps.googleusercontent.com.json', SCOPES)
+            creds = flow.run_local_server(port=8081)
+       
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    return build('gmail', 'v1', credentials=creds)
+
+def send_email(service, to, subject, body):
+    try:
+       
+        message = MIMEMultipart()
+        message['to'] = to
+        message['from'] = 'ha.wakhule@gmail.com'  
+        message['subject'] = subject
+        message.attach(MIMEText(body, 'html'))
+
+       
+        raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode('utf-8')
+        message_body = {'raw': raw_message}
+
+        
+        service.users().messages().send(userId='me', body=message_body).execute()
+        print("Email sent successfully!")
+        return True
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
+
+class forgot_password(Resource):
+    def post(self):
+        email = request.json.get('email')
+        user = User.query.filter_by(email=email).first()  
+        if user:
+            token = create_access_token(identity=str(email), expires_delta=timedelta(minutes=30))
+            reset_link = f"http://localhost:3000/reset-password?token={token}"
+            subject = "Password Reset Request"
+            body = f"""
+                        <html>
+                            <body>
+                                <p>For Tiketi account {user.username}, click this 
+                                    <a href="{reset_link}">link</a> 
+                                    to reset your password. This link expires in 30 minutes
+                                </p>
+                            </body>
+                        </html>
+                        """
+
+
+           
+            service = authenticate_gmail()
+            send_email(service, email, subject, body)
+
+            return make_response({"message": "Password reset email sent"},200)
+        else:
+            return make_response({"error": "Email not found"},404)
+        
+
+
+class reset_password(Resource):
+    @jwt_required()
+    def post(self):
+        new_password = request.json.get('new_password')
+        try:
+            email = get_jwt_identity()  
+            user = User.query.filter_by(email=email).first()
+            if user:
+                user.password_hash =  new_password 
+                db.session.commit()
+                return make_response({"msg": "Password reset successful"}, 200)
+            else:
+                return make_response({"msg": "User not found"}, 404)
+        except:
+            return make_response({"msg": "Invalid or expired token"}, 400)
 
 def get_mpesa_token():
     url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
@@ -244,36 +333,56 @@ class UserEvents(Resource):
         return make_response(new_user_event.to_dict(),201)
 
 
-
 class Signup(Resource):
     def post(self):
         data = request.get_json()
+            
         errors = {}
-
-        if not data.get('username'):
-            errors['username'] = 'Username is required'
-        if not data.get('password'):
-            errors['password'] = 'Password is required'
-        
+        for field in ['username', 'email', 'password', 'role']:
+            if not data.get(field):
+                errors[field] = f'{field.capitalize()} is required'
+                
         if errors:
+            print(f"Validation errors: {errors}")
             return {'errors': errors}, 422
-
+            
         try:
+                    
             new_user = User(
                 username=data['username'],
-                email=data.get('email', ''),
-                role=data.get('role', '')
+                email=data['email'],
+                role=data['role'],
             )
-            new_user.password_hash = data['password']  # Assuming you hash passwords
-
+            
+            new_user.password_hash = data['password']
+                     
             db.session.add(new_user)
             db.session.commit()
-        except Exception:
+                   
+            access_token = create_access_token(identity=str(new_user.id), expires_delta=timedelta(days=30)) 
+            return {'access_token': access_token}, 200
+
+            
+        except ValueError as e:
+          
+            error_message = str(e)
+            print(f"ValueError during signup: {error_message}")
+            
+
+            if "username" in error_message.lower():
+                errors['username'] = error_message
+            elif "email" in error_message.lower():
+                errors['email'] = error_message
+            else:
+                errors['validation'] = error_message
+                
+            return make_response({'errors': error_message}, 422)
+            
+        except Exception as e:
             db.session.rollback()
-            return {'errors': {'database': 'Error saving user'}}, 422
-        print(new_user)
-        access_token = create_access_token(identity=str(new_user.id))  # Generate JWT token
-        return {'access_token': access_token}, 200
+            error_detail = str(e)
+            print(f"Exception during signup: {error_detail}")
+            return {'errors': {'database': f'Error saving user: {error_detail}'}}, 422
 
 
     
@@ -283,7 +392,7 @@ class Login(Resource):
         user = User.query.filter_by(username=data.get('username')).first()
 
         if user and user.authenticate(data.get('password', '')):
-            access_token = create_access_token(identity=str(user.id))  # Generate JWT token
+            access_token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=30))  
             return {'access_token': access_token}, 200
 
         return {'error': 'Invalid username or password'}, 401
@@ -291,9 +400,9 @@ class Login(Resource):
 
 
 class CheckSession(Resource):
-    @jwt_required()  # Require JWT token
+    @jwt_required()  
     def get(self):
-        user_id = get_jwt_identity()  # Extract user ID from token
+        user_id = get_jwt_identity()  
         user = User.query.get(user_id)
 
         if user:
@@ -341,7 +450,8 @@ api.add_resource(stk_push,'/stk-push')
 api.add_resource(HandleUserTickets, '/user-tickets')
 api.add_resource(EventTickets,'/event-tickets')
 api.add_resource(UserEvents, '/user-events')
-
+api.add_resource(forgot_password, '/forgot-password')
+api.add_resource(reset_password,'/reset-password')
 
 
 
