@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import './Navbar.css'
 function Navbar({setUser,user}) {
   function handleLogoutClick() {
-    fetch("https://tiketi-tamashafrunt.onrender.com/logout", { method: "DELETE" }).then((r) => {
+    fetch("/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
         setUser(null);
       }

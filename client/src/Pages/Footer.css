@@ -14,6 +14,7 @@
   padding: 56px 80px 21px;
   flex-direction: column;
   align-items: center;
+  
 }
 
 .footer-content {
@@ -21,6 +22,7 @@
   width: 100%;
   max-width: 1240px;
   flex-wrap: wrap;
+
 }
 
 .footer-brand {
@@ -149,7 +151,7 @@
   font-size: 14px;
 }
 
-.subscribe-button {
+.subscribe-butn{
   border: none;
   border-radius: 50px;
   background-color: rgb(245, 22, 126);

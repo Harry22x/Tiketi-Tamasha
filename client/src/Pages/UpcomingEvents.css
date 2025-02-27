@@ -92,7 +92,7 @@ h2 {
   position: relative;
 }
 
-/* Dropdown menu */
+/* Dropdown menu
 .absolute {
   position: absolute;
   top: 100%;
@@ -103,7 +103,7 @@ h2 {
   width: max-content;
   min-width: 120px;
   padding: 8px 0;
-}
+} */
 
 /* Dropdown links
 .absolute a {
@@ -143,7 +143,7 @@ h2 {
   font-weight: bold;
   margin-bottom: 2rem;
   text-align: left;
-  color: #470d92;
+  color: #0f0e3d ;
   font-family: "DM Sans", sans-serif;
   width: 100%; /* Ensures the title takes up full width */
   margin-left: 1rem; /* Adjusts the title's position to the left */

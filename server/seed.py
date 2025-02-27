@@ -151,7 +151,7 @@ if __name__ == "__main__":
             
             regular_ticket = EventTicket(
                 ticket_type="regular",
-                price=randint(20, 90),
+                price=randint(1000, 1500),
                 available_quantity=randint(40, 60),
                 sale_end_date=fake.date_between(start_date="today", end_date="+60d")
             )
@@ -161,7 +161,7 @@ if __name__ == "__main__":
             
             advanced_ticket = EventTicket(
                 ticket_type="advanced",
-                price=randint(10, 50),
+                price=randint(1500, 3000),
                 available_quantity=randint(20, 40),
                 sale_end_date=fake.date_between(start_date="today", end_date="+20d")
             )
@@ -171,7 +171,7 @@ if __name__ == "__main__":
            
             vip_ticket = EventTicket(
                 ticket_type="vip",
-                price=randint(90, 150),
+                price=randint(3500, 5000),
                 available_quantity=randint(20, 30),
                 sale_end_date=fake.date_between(start_date="today", end_date="+20d")
             )

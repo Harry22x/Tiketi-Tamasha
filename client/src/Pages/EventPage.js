@@ -169,7 +169,7 @@ function EventPage() {
           <h2 className="section-title">Total</h2>
           <p className="total-tickets">Tickets: {Object.values(selectedTickets).reduce((sum, ticket) => sum + ticket.quantity, 0)}</p>
           <p className="total-price">Total: {totalAmount.toLocaleString()} KES</p>
-          <b><label htmlFor="phone-number">*Enter phone number for Mpesa transaction:</label></b>
+          <b><label htmlFor="phone-number">*Enter phone number for M-pesa transaction:</label></b>
           <input id="phone-number" value={phoneNumber} className="phone-number" onChange={(e) => setPhoneNumber(e.target.value)}></input>
           <button className="purchase-button" onClick={() => purchase()}>{purchasebtn}</button>
           {errors && <p className="error-message">{errors}</p>}
