@@ -1,37 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useOutletContext} from "react-router-dom";
 import "../index.css";
 
 export default function ProfilePage() {
-  const [userData, setUserData] = useState({ name: "", email: "", role: "", profilePic: "" });
+  let [onLogin,user,check_session] = useOutletContext();
+  const [userData, setUserData] = useState("user");
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
+  
 
   // 🔹 Fetch user data from backend API
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const response = await fetch("https://your-backend.com/api/user", {
-          method: "GET",
-          credentials: "include", // Send cookies for authentication
-        });
-
-        if (!response.ok) {
-          navigate("/login"); // Redirect if not authenticated
-          return;
-        }
-
-        const data = await response.json();
-        setUserData(data);
-        setNewName(data.name);
-      } catch (error) {
-        console.error("Error fetching user data:", error.message);
-      }
     };
 
     fetchUserData();
