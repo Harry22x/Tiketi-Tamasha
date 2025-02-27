@@ -12,6 +12,7 @@ from datetime import datetime
 from random import randint, choice as rc, choices
 import cloudinary
 
+
 import cloudinary.api
 
 import cloudinary.uploader
@@ -20,12 +21,13 @@ from faker import Faker
 from flask_jwt_extended import  create_access_token, jwt_required, get_jwt_identity
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+from google.auth import _helpers
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from datetime import timedelta
+from dotenv import load_dotenv
 
 import string
 
@@ -36,6 +38,7 @@ from models import User, UserTicket, Event, EventTicket,UserEvent
 
 # Views go here!
 
+load_dotenv()
 
 CONSUMER_KEY = "wrRTjoU6QhClK1Lf8TIJ0sxqJfCvfEgU68jepcKNxi96NHhR"
 CONSUMER_SECRET = "4acLqqC1SxAoT7ym3G5Y2903zg7fNG24MgSQhsX1cNWfFf4aWw8fpMbJKpwPo0Za"
@@ -53,22 +56,42 @@ cloudinary.config(
 # If modifying these SCOPES, delete the token.json file.
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
+
 def authenticate_gmail():
     creds = None
-   
+
+    # Check if token.json exists
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-  
+
+    # If there are no valid credentials, authenticate the user
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            # Convert expiry to a timezone-naive datetime for comparison
+            expiry_naive = creds.expiry.replace(tzinfo=None)
+            if _helpers.utcnow() >= expiry_naive:
+                creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('client_secret_419906042570-2p9b0ljl3uhq853oheq403s1hec6pmt8.apps.googleusercontent.com.json', SCOPES)
+            flow = InstalledAppFlow.from_client_config(
+                {
+                    "web": {
+                        "client_id": os.getenv('GOOGLE_CLIENT_ID'),
+                        "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
+                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                        "token_uri": "https://oauth2.googleapis.com/token",
+                    }
+                },
+                scopes=['https://www.googleapis.com/auth/gmail.send'],
+            )
             creds = flow.run_local_server(port=8081)
-       
+
+        # Save the credentials for future use
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
+
     return build('gmail', 'v1', credentials=creds)
+
+
 
 def send_email(service, to, subject, body):
     try:

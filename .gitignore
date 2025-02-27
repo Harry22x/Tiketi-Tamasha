@@ -64,3 +64,5 @@ __pycache__
 instance
 .vscode
 package-lock.json
+server/client_secret_*.json
+server/token.json
