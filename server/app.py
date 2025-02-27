@@ -4,6 +4,7 @@
 
 # Remote library imports
 from flask import request,make_response,session,jsonify
+from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 import os
 import requests
@@ -17,6 +18,7 @@ import cloudinary.api
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 from faker import Faker
+import traceback
 
 
 import string
@@ -245,53 +247,76 @@ class UserEvents(Resource):
 
 
 class Signup(Resource):
-    pass
     def post(self):
         data = request.get_json()
+      
         
-        
+       
         errors = {}
-        
-       
-        if not data.get('username'):
-            errors['username'] = 'Username is required'
-        
-        
-        if not data.get('password'):
-            errors['password'] = 'Password is required'
-        # elif len(data['password']) < 6:
-        #     errors['password'] = 'Password must be at least 6 characters'
-        
-       
+        for field in ['username', 'email', 'password', 'role']:
+            if not data.get(field):
+                errors[field] = f'{field.capitalize()} is required'
+                
         if errors:
+            print(f"Validation errors: {errors}")
             return {'errors': errors}, 422
-        
+            
         try:
+            
+            existing_user = User.query.filter(User.username == data['username']).first()
+            if existing_user:
+                errors['username'] = f"Username '{data['username']}' already exists."
+                print(f"Username already exists: {data['username']}")
+                print(errors)
+                return {'errors': errors}, 422
+                
+            existing_email = User.query.filter(User.email == data['email']).first()
+            if existing_email:
+                errors['email'] = f"Email '{data['email']}' already exists."
+                print(f"Email already exists: {data['email']}")
+                return {'errors': errors}, 422
+            
+          
             new_user = User(
                 username=data['username'],
-                email = data['email'],
-                role = data['role'],
-                
+                email=data['email'],
+                role=data['role'],
             )
-           
+            
             new_user.password_hash = data['password']
             
-           
+            
             db.session.add(new_user)
             db.session.commit()
-        except ValueError as e:
             
-            return {'errors': {'username': str(e)}}, 422
+          
+            session['user_id'] = new_user.id
+            session.permanent = True
+            
+            print(f"User created successfully: {new_user.id}")
+            return new_user.to_dict(), 201
+            
+        except ValueError as e:
+          
+            error_message = str(e)
+            print(f"ValueError during signup: {error_message}")
+            
+
+            if "username" in error_message.lower():
+                errors['username'] = error_message
+            elif "email" in error_message.lower():
+                errors['email'] = error_message
+            else:
+                errors['validation'] = error_message
+                
+            return {'errors': errors}, 422
+            
         except Exception as e:
             db.session.rollback()
-            return {'errors': {'database': 'Error saving user'}}, 422
-        
-      
-        session['user_id'] = new_user.id
-        session.permanent = True
-        
-       
-        return new_user.to_dict(), 201
+            error_detail = str(e)
+            print(f"Exception during signup: {error_detail}")
+            print(traceback.format_exc())
+            return {'errors': {'database': f'Error saving user: {error_detail}'}}, 422
     
 class Login(Resource):
     def post(self):

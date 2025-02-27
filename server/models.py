@@ -17,7 +17,6 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     role = db.Column(db.String)
     _password_hash = db.Column(db.String, nullable=False)
-    
 
     user_tickets = db.relationship(
         'UserTicket', back_populates='user', cascade='all, delete-orphan'
