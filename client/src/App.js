@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
-import LandingPage from './Pages/LandingPage';  
-import Navbar from './components/Navbar';import { Outlet } from 'react-router-dom';
-import Reviews from './components/Reviews';
-import Footer from './Pages/Footer';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Navbar from "./components/Navbar";
+import { Outlet } from "react-router-dom";
+import Footer from "./Pages/Footer";
 
 function App() {
   const [user, setUser] = useState(null);
-  const isMounted = useRef(true); // Prevent state updates on unmounted component
+  const isMounted = useRef(true); // Prevent state updates on an unmounted component
 
   const getToken = () => localStorage.getItem("jwtToken");
 
-  // Optimized checkSession function
   const checkSession = useCallback(async () => {
     const token = getToken();
     if (!token) {
@@ -49,7 +47,6 @@ function App() {
     isMounted.current = true;
     checkSession();
 
-    // Listen for token changes in localStorage (login/logout)
     const handleStorageChange = (event) => {
       if (event.key === "jwtToken") {
         checkSession();

@@ -1,26 +1,35 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useNavigate,useOutletContext} from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "../index.css";
 
 export default function ProfilePage() {
-  let [onLogin,user,check_session] = useOutletContext();
-  const [userData, setUserData] = useState("user");
+  const [onLogin, user, check_session] = useOutletContext();
+  const [userData, setUserData] = useState({});
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
-  
 
   // 🔹 Fetch user data from backend API
   useEffect(() => {
     const fetchUserData = async () => {
+      try {
+        const response = await fetch("https://your-backend.com/api/user", {
+          credentials: "include",
+        });
+        if (!response.ok) throw new Error("Failed to fetch user data.");
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error("Fetch User Data Error:", error.message);
+      }
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, []);
 
   // 🔹 Update profile (Name & Password)
   const handleUpdateProfile = async () => {
@@ -34,7 +43,6 @@ export default function ProfilePage() {
       });
 
       if (!response.ok) throw new Error("Failed to update profile.");
-
       setUserData((prev) => ({ ...prev, name: newName }));
       alert("Profile updated successfully!");
     } catch (error) {
@@ -130,8 +138,8 @@ export default function ProfilePage() {
         </div>
 
         <div className="mt-4">
-          <p><strong>Email:</strong> {userData.email}</p>
-          <p><strong>Role:</strong> {userData.role}</p>
+          <p><strong>Email:</strong> {userData.email || "Not provided"}</p>
+          <p><strong>Role:</strong> {userData.role || "Not specified"}</p>
         </div>
 
         <div className="mt-4">
