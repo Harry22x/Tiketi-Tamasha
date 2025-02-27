@@ -74,13 +74,13 @@ const Footer = () => {
                     className="email-input"
                     aria-label="Enter your email to subscribe"
                   />
-                  <button className="subscribe-button">Subscribe Now</button>
+                  <button className="subscribe-butn">Subscribe Now</button>
                 </div>
               </div>
             </div>
 
             {/* Contact Component */}
-            <div className="contact-form">
+            {/* <div className="contact-form">
               <h3 className="nav-title">Contact Us</h3>
               <input
                 type="email"
@@ -97,7 +97,7 @@ const Footer = () => {
                 className="contact-textarea"
               />
               <button className="submit-button">Submit</button>
-            </div>
+            </div> */}
           </div>
         </div>
 
