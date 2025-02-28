@@ -8,6 +8,7 @@ import ProfilePage from "./Pages/Profile";
 import CreateEvent from "./Pages/CreateEvent";
 import MoreEvents from "./Pages/MoreEvents";
 import Account from "./Pages/Account";
+import Contact from "./Pages/ContactPage";
 import Calender from "./Pages/Calender";
 const routes = [
   {
@@ -22,6 +23,7 @@ const routes = [
       {path:"/profile", element: <Account/>},      
       { path:"/create-event",element: <CreateEvent /> },
       {path:"/more-events", element:<MoreEvents />},
+      {path:"/contact", element:<Contact /> },
       { path:"/calender", element:<Calender />},
     ],
   },
