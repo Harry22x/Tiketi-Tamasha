@@ -29,6 +29,9 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from datetime import timedelta
 from dotenv import load_dotenv
+import google.auth.exceptions
+import pytz
+
 
 import string
 
@@ -61,38 +64,96 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 def authenticate_gmail():
     creds = None
 
-    # Check if token.json exists
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # Load credentials from environment variables
+    token = os.getenv('GOOGLE_TOKEN')
+    refresh_token = os.getenv('GOOGLE_REFRESH_TOKEN')
+    expiry = os.getenv('GOOGLE_TOKEN_EXPIRY')
 
-    # If there are no valid credentials, authenticate the user
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            # Convert expiry to a timezone-naive datetime for comparison
-            expiry_naive = creds.expiry.replace(tzinfo=None)
-            if _helpers.utcnow() >= expiry_naive:
-                creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_config(
-                {
-                    "web": {
-                        "client_id": os.getenv('GOOGLE_CLIENT_ID'),
-                        "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
-                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                        "token_uri": "https://oauth2.googleapis.com/token",
-                    }
-                },
+    if token and refresh_token and expiry:
+        try:
+            expiry_dt = datetime.fromisoformat(expiry.replace("Z", "+00:00"))
+            expiry_dt = expiry_dt.astimezone(pytz.UTC)
+            print(f"Loaded expiry: {expiry_dt}, tzinfo: {expiry_dt.tzinfo}")
+            
+            creds = Credentials(
+                token=token,
+                refresh_token=refresh_token,
+                token_uri="https://oauth2.googleapis.com/token",
+                client_id=os.getenv('GOOGLE_CLIENT_ID'),
+                client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
                 scopes=['https://www.googleapis.com/auth/gmail.send'],
+                expiry=expiry_dt
             )
-            creds = flow.run_local_server(port=8081)
+            print(f"Creds expiry set: {creds.expiry}, tzinfo: {creds.expiry.tzinfo}")
+        except ValueError as e:
+            print(f"Error parsing expiry time: {e}")
+            creds = None
 
-        # Save the credentials for future use
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
+    # Custom expiration check with explicit timezone handling
+    def is_expired(creds):
+        if not creds or not creds.token or not creds.expiry:
+            return True
+        now = pytz.UTC.localize(_helpers.utcnow())  # UTC-aware
+        expiry = creds.expiry
+        # Ensure expiry is UTC-aware if it’s not already
+        if not hasattr(expiry, 'tzinfo') or expiry.tzinfo is None:
+            expiry = pytz.UTC.localize(expiry)
+        print(f"Checking expiry: now={now}, expiry={expiry}")
+        return now >= expiry
 
+    # Use our custom check
+    if creds:
+        print(f"Token: {creds.token}")
+        if is_expired(creds):
+            if creds.refresh_token:
+                try:
+                    creds.refresh(Request())
+                    # Ensure expiry is UTC-aware post-refresh
+                    if not creds.expiry.tzinfo:
+                        creds.expiry = pytz.UTC.localize(creds.expiry)
+                    print(f"Credentials refreshed successfully. New expiry: {creds.expiry}")
+                except google.auth.exceptions.RefreshError as e:
+                    print(f"Failed to refresh credentials: {e}")
+                    creds = None
+        else:
+            print("Credentials are still valid.")
+    else:
+        print("No credentials loaded from environment.")
+
+    # If creds are still invalid or missing, initiate OAuth flow
+    if not creds or is_expired(creds):
+        print("Starting OAuth flow...")
+        flow = InstalledAppFlow.from_client_config(
+            {
+                "web": {
+                    "client_id": os.getenv('GOOGLE_CLIENT_ID'),
+                    "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                }
+            },
+            scopes=['https://www.googleapis.com/auth/gmail.send'],
+        )
+        creds = flow.run_local_server(port=8081)
+        # Ensure expiry is UTC-aware after OAuth
+        if not creds.expiry.tzinfo:
+            creds.expiry = pytz.UTC.localize(creds.expiry)
+
+        os.environ['GOOGLE_TOKEN'] = creds.token
+        os.environ['GOOGLE_REFRESH_TOKEN'] = creds.refresh_token
+        os.environ['GOOGLE_TOKEN_EXPIRY'] = creds.expiry.isoformat()
+        print("New credentials obtained and stored in environment variables.")
+
+    # Final check
+    print(f"Returning service with creds: Token: {creds.token}, Expiry: {creds.expiry}")
     return build('gmail', 'v1', credentials=creds)
 
-
+# For debugging: Compare naive and aware datetimes manually
+def is_expired(expiry):
+    now = _helpers.utcnow()  # Naive datetime
+    now_utc = pytz.UTC.localize(now)  # Make it aware
+    print(f"Comparing now: {now_utc} with expiry: {expiry}")
+    return now_utc >= expiry
 
 def send_email(service, to, subject, body):
     try:
@@ -117,34 +178,40 @@ def send_email(service, to, subject, body):
 
 
 class forgot_password(Resource):
-    def post(self):
-        email = request.json.get('email')
-        user = User.query.filter_by(email=email).first()  
-        if user:
-            token = create_access_token(identity=str(email), expires_delta=timedelta(minutes=30))
-            reset_link = f"http://localhost:3000/reset-password?token={token}"
-            subject = "Password Reset Request"
-            body = f"""
-                        <html>
-                            <body>
-                                <p>For Tiketi account {user.username}, click this 
-                                    <a href="{reset_link}">link</a> 
-                                    to reset your password. This link expires in 30 minutes
-                                </p>
-                            </body>
-                        </html>
-                        """
+   def post(self):
+        try:
+            email = request.json.get('email')
+            user = User.query.filter_by(email=email).first()
+            if user:
+                # Ensure UTC-aware datetime for token expiration
+                now = datetime.now(pytz.UTC)
+                expires = timedelta(minutes=30)
+                token = create_access_token(
+                    identity=str(email),
+                    expires_delta=expires
+                )
+                reset_link = f"http://localhost:3000/reset-password?token={token}"
+                subject = "Password Reset Request"
+                body = f"""
+                    <html>
+                        <body>
+                            <p>For Tiketi account {user.username}, click this 
+                                <a href="{reset_link}">link</a> 
+                                to reset your password. This link expires in 30 minutes
+                            </p>
+                        </body>
+                    </html>
+                """
 
+                service = authenticate_gmail()
+                send_email(service, email, subject, body)
+                return make_response({"message": "Password reset email sent"}, 200)
+            else:
+                return make_response({"error": "Email not found"}, 404)
 
-           
-            service = authenticate_gmail()
-            send_email(service, email, subject, body)
-
-            return make_response({"message": "Password reset email sent"},200)
-        else:
-            return make_response({"error": "Email not found"},404)
-        
-
+        except Exception as e:
+            print(f"Error in forgot_password: {e}")
+            raise  # Re-raise to let Flask handle the 500
 
 class reset_password(Resource):
     @jwt_required()
