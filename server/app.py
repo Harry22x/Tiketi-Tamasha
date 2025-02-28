@@ -57,95 +57,42 @@ cloudinary.config(
     secure=True,
 )
 
-# If modifying these SCOPES, delete the token.json file.
+
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 
 def authenticate_gmail():
     creds = None
 
-    # Load credentials from environment variables
-    token = os.getenv('GOOGLE_TOKEN')
-    refresh_token = os.getenv('GOOGLE_REFRESH_TOKEN')
-    expiry = os.getenv('GOOGLE_TOKEN_EXPIRY')
+  
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
 
-    if token and refresh_token and expiry:
-        try:
-            expiry_dt = datetime.fromisoformat(expiry.replace("Z", "+00:00"))
-            expiry_dt = expiry_dt.astimezone(pytz.UTC)
-            print(f"Loaded expiry: {expiry_dt}, tzinfo: {expiry_dt.tzinfo}")
-            
-            creds = Credentials(
-                token=token,
-                refresh_token=refresh_token,
-                token_uri="https://oauth2.googleapis.com/token",
-                client_id=os.getenv('GOOGLE_CLIENT_ID'),
-                client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
-                scopes=['https://www.googleapis.com/auth/gmail.send'],
-                expiry=expiry_dt
-            )
-            print(f"Creds expiry set: {creds.expiry}, tzinfo: {creds.expiry.tzinfo}")
-        except ValueError as e:
-            print(f"Error parsing expiry time: {e}")
-            creds = None
-
-    # Custom expiration check with explicit timezone handling
-    def is_expired(creds):
-        if not creds or not creds.token or not creds.expiry:
-            return True
-        now = pytz.UTC.localize(_helpers.utcnow())  # UTC-aware
-        expiry = creds.expiry
-        # Ensure expiry is UTC-aware if it’s not already
-        if not hasattr(expiry, 'tzinfo') or expiry.tzinfo is None:
-            expiry = pytz.UTC.localize(expiry)
-        print(f"Checking expiry: now={now}, expiry={expiry}")
-        return now >= expiry
-
-    # Use our custom check
-    if creds:
-        print(f"Token: {creds.token}")
-        if is_expired(creds):
-            if creds.refresh_token:
-                try:
-                    creds.refresh(Request())
-                    # Ensure expiry is UTC-aware post-refresh
-                    if not creds.expiry.tzinfo:
-                        creds.expiry = pytz.UTC.localize(creds.expiry)
-                    print(f"Credentials refreshed successfully. New expiry: {creds.expiry}")
-                except google.auth.exceptions.RefreshError as e:
-                    print(f"Failed to refresh credentials: {e}")
-                    creds = None
+  
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+         
+            expiry_naive = creds.expiry.replace(tzinfo=None)
+            if _helpers.utcnow() >= expiry_naive:
+                creds.refresh(Request())
         else:
-            print("Credentials are still valid.")
-    else:
-        print("No credentials loaded from environment.")
+            flow = InstalledAppFlow.from_client_config(
+                {
+                    "web": {
+                        "client_id": os.getenv('GOOGLE_CLIENT_ID'),
+                        "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
+                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                        "token_uri": "https://oauth2.googleapis.com/token",
+                    }
+                },
+                scopes=['https://www.googleapis.com/auth/gmail.send'],
+            )
+            creds = flow.run_local_server(port=8081)
 
-    # If creds are still invalid or missing, initiate OAuth flow
-    if not creds or is_expired(creds):
-        print("Starting OAuth flow...")
-        flow = InstalledAppFlow.from_client_config(
-            {
-                "web": {
-                    "client_id": os.getenv('GOOGLE_CLIENT_ID'),
-                    "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
-                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                    "token_uri": "https://oauth2.googleapis.com/token",
-                }
-            },
-            scopes=['https://www.googleapis.com/auth/gmail.send'],
-        )
-        creds = flow.run_local_server(port=8081)
-        # Ensure expiry is UTC-aware after OAuth
-        if not creds.expiry.tzinfo:
-            creds.expiry = pytz.UTC.localize(creds.expiry)
+        
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
 
-        os.environ['GOOGLE_TOKEN'] = creds.token
-        os.environ['GOOGLE_REFRESH_TOKEN'] = creds.refresh_token
-        os.environ['GOOGLE_TOKEN_EXPIRY'] = creds.expiry.isoformat()
-        print("New credentials obtained and stored in environment variables.")
-
-    # Final check
-    print(f"Returning service with creds: Token: {creds.token}, Expiry: {creds.expiry}")
     return build('gmail', 'v1', credentials=creds)
 
 # For debugging: Compare naive and aware datetimes manually

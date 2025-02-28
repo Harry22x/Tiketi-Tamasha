@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
-
+import './CreateEvent.css'
 const CreateEvent = () => {
   const [eventData, setEventData] = useState({
     name: "",
@@ -137,7 +137,8 @@ const CreateEvent = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pt-20 bg-gradient-to-br from-blue-600 to-purple-700 p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center pt-20 p-8" style={{ background: "linear-gradient(135deg, #000000 0%, #0f0e3d 100%)" }}>
+
       <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-2xl">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-6">Create an Event</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -162,8 +163,8 @@ const CreateEvent = () => {
                   placeholder={`${category.charAt(0).toUpperCase() + category.slice(1)} Price`}
                   value={eventData.tickets[category].price}
                   onChange={(e) => handleTicketChange(e, category)}
-                  className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="w-full px-4 py-3 border-none outline-none rounded-lg shadow-sm focus:ring-2"
+                  />
                 <input
                   type="text"
                   name="quantity"
