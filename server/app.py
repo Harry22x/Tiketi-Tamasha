@@ -62,45 +62,25 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 
 def authenticate_gmail():
-    creds = None
-
-  
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-
-  
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-         
-            expiry_naive = creds.expiry.replace(tzinfo=None)
-            if _helpers.utcnow() >= expiry_naive:
-                creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_config(
-                {
-                    "web": {
-                        "client_id": os.getenv('GOOGLE_CLIENT_ID'),
-                        "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
-                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                        "token_uri": "https://oauth2.googleapis.com/token",
-                    }
-                },
-                scopes=['https://www.googleapis.com/auth/gmail.send'],
-            )
-            creds = flow.run_local_server(port=8081)
-
+    
+    creds = Credentials(
+        token=os.getenv('GOOGLE_ACCESS_TOKEN'),
+        refresh_token=os.getenv('GOOGLE_REFRESH_TOKEN'),
+        token_uri=os.getenv('GOOGLE_TOKEN_URI', 'https://oauth2.googleapis.com/token'),
+        client_id=os.getenv('GOOGLE_CLIENT_ID'),
+        client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+        scopes=SCOPES,
+    )
+    
+   
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
         
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-
+       
+        os.environ['GOOGLE_ACCESS_TOKEN'] = creds.token
+    
     return build('gmail', 'v1', credentials=creds)
 
-# For debugging: Compare naive and aware datetimes manually
-def is_expired(expiry):
-    now = _helpers.utcnow()  # Naive datetime
-    now_utc = pytz.UTC.localize(now)  # Make it aware
-    print(f"Comparing now: {now_utc} with expiry: {expiry}")
-    return now_utc >= expiry
 
 def send_email(service, to, subject, body):
     try:
@@ -138,7 +118,7 @@ class forgot_password(Resource):
                     expires_delta=expires
                 )
                 reset_link = f"http://localhost:3000/reset-password?token={token}"
-                subject = "Password Reset Request"
+                subject = "Tiketi Account Password Reset Request"
                 body = f"""
                     <html>
                         <body>

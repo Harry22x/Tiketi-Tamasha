@@ -77,7 +77,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
   }
 
   return (
-    <div style={{ width: "46%", backgroundColor: "white", borderRadius: "10px" }}>
+    <div style={{  borderRadius: "10px" }}>
       <h1>Event Details:</h1>
       <h2>{name}</h2>
       <h6>{description}</h6>
@@ -86,30 +86,30 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
       <h6>{time}</h6>
       <img src={image.image} alt="Event" style={{width:"50px"}}  />
       <Link to={`/events/${id}`}>
-        <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginBottom: "10px" }}>
+        <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginBottom: "10px" }}>
           View More Details
         </button>
       </Link>
       <br />
       {isEditing ? (
-        <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
+        <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
           Cancel
         </button>
       ) : (
         <>
-        <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
+        <button className=" bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
           Edit
         </button>
         <br></br><br></br>
         </>
       )}
-      <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  onClick={handleDelete}>
+      <button className=" bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  onClick={handleDelete}>
         Delete
       </button>
 
       {isEditing && (
        
-          <form onSubmit={formik.handleSubmit}>
+          <form style={{maxHeight:"1000px"}}onSubmit={formik.handleSubmit}>
             
               <label htmlFor="eventName">Event Name</label>
               <input
@@ -117,7 +117,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="eventName"
                 name="eventName"
                 autoComplete="off"
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className="px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 value={formik.values.eventName}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -129,7 +129,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 type="text"
                 id="description"
                 name="description"
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 autoComplete="off"
                 value={formik.values.description}
                 onChange={formik.handleChange}
@@ -143,7 +143,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="location"
                 name="location"
                 autoComplete="off"
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 value={formik.values.location}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -158,7 +158,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="date"
                 name="date"
                 autoComplete="off"
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 value={formik.values.date}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -171,7 +171,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="time"
                 name="time"
                 autoComplete="off"
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 value={formik.values.time}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -184,7 +184,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="image"
                 name="image"
                 accept="image/*"
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 onChange={handleFileChange}
                 onBlur={formik.handleBlur}
               />
@@ -194,7 +194,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
             
 
             
-              <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  variant="fill" color="primary" type="submit">
+              <button className=" bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  variant="fill" color="primary" type="submit">
                 {isLoading ? "Loading..." : "Submit"}
               </button>
             
