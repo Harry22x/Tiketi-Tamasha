@@ -27,13 +27,14 @@ function Account(){
         {user.role == 'Organizer'? (
             <>
             <h1 className="text-4xl font-bold text-center text-gray-900 mb-6">My events:  </h1>
-            {user.user_events.length > 1 ? (null):(<h1>This is where your hosted events would show but you are currently not hosting any</h1>)}
+         
+            {user.user_events.length > 0 ? (null):(<h1>This is where your hosted events would show but you are currently not hosting any</h1>)}
             {user.user_events.map((data) =><MyEventCard key={data.event.id} id={data.event.id} name={data.event.name} description={data.event.description}
              time={data.event.time} image={data.event} date={data.event.date} location={data.event.location}/>)}
             </>
         ):(null)}
         <h3 className="text-4xl font-bold text-center text-gray-900 mb-6">Attending events:</h3>
-        {user.user_tickets.length > 1 ? (null):(<h1>This is where your attening events would show but you are currently not attending any</h1>)}
+        {user.user_tickets.length > 0 ? (null):(<h1>This is where your attening events would show but you are currently not attending any</h1>)}
         <div style={{ display: "contents", gap: "100px", flexWrap: "wrap"}} >{user.user_tickets.map((data, index) => {            
             if(!used_events.includes(data.event_ticket.event.id)){
                 used_events.push(data.event_ticket.event.id)
