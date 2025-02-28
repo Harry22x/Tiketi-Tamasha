@@ -51,10 +51,10 @@ const Footer = () => {
               <div className="nav-column">
                 <h3 className="nav-title">TiketiTamasha</h3>
                 <nav className="nav-links">
-                  <a href="#" className="nav-link">
+                  <a href="#" className="navfoot-link">
                     About Us
                   </a>
-                  <a href="#" className="nav-link">
+                  <a href="#" className="navfoot-link">
                     Contact Us
                   </a>
                 </nav>

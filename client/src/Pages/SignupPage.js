@@ -43,6 +43,7 @@ const SignupPage = () => {
           <input
             type="text"
             id="username"
+            className="signup-input"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -52,6 +53,7 @@ const SignupPage = () => {
           <input
             type="email"
             id="email"
+            className="signup-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -61,6 +63,7 @@ const SignupPage = () => {
           <input
             type="password"
             id="password"
+            className="signup-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -69,6 +72,7 @@ const SignupPage = () => {
           <label htmlFor="role">Role:</label>
           <select
             id="role"
+            className="signup-select"
             value={role}
             onChange={(e) => setRole(e.target.value)}
           >
@@ -76,7 +80,7 @@ const SignupPage = () => {
             <option value="Organizer">Organizer</option>
           </select>
 
-          <button type="submit">Sign Up</button>
+          <button type="submit" className="btn">Sign Up</button>
         </form>
 
         <Link to="/login">
