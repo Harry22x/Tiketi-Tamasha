@@ -56,26 +56,32 @@ const SignupPage = () => {
         <form onSubmit={handleSignup} className="bg-white p-6 shadow-md rounded-lg">
           <input
             type="text"
-            placeholder="Username"
+            id="username"
+            className="signup-input"
+            placeholder="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="mb-3 p-2 border rounded w-full focus:ring-2 focus:ring-blue-500"
+            
             required
           />
           <input
             type="email"
-            placeholder="Email"
+            id="email"
+            className="signup-input"
+            placeholder="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mb-3 p-2 border rounded w-full focus:ring-2 focus:ring-blue-500"
+            
             required
           />
           <input
             type="password"
-            placeholder="Password"
+            id="password"
+            className="signup-input"
+            placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mb-3 p-2 border rounded w-full focus:ring-2 focus:ring-blue-500"
+            
             required
           />
           <input
@@ -83,25 +89,22 @@ const SignupPage = () => {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="mb-3 p-2 border rounded w-full focus:ring-2 focus:ring-blue-500"
+           
             required
           />
           
           <select
+            id="role"
+            className="signup-select"
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="mb-3 p-2 border rounded w-full"
+            
           >
             <option value="Attendee">Event Goer</option>
             <option value="Organizer">Organizer</option>
           </select>
 
-          <button 
-            type="submit" 
-            className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 transition duration-300"
-          >
-            Sign Up
-          </button>
+          <button type="submit" className="btn">Sign Up</button>
         </form>
 
         <p className="mt-4 text-center text-sm">

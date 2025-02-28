@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom"; // ✅ Use Link for navigation
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 const Footer = () => {
@@ -51,10 +51,10 @@ const Footer = () => {
               <div className="nav-column">
                 <h3 className="nav-title">TiketiTamasha</h3>
                 <nav className="nav-links">
-                  <Link to="/about" className="nav-link">
+                  <Link to="/about" className="navfoot-link">
                     About Us
                   </Link>
-                  <Link to="/contact" className="nav-link">
+                  <Link to="/contact" className="navfoot-link">
                     Contact Us
                   </Link>
                 </nav>

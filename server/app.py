@@ -54,21 +54,21 @@ cloudinary.config(
     secure=True,
 )
 
-# If modifying these SCOPES, delete the token.json file.
+
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 
 def authenticate_gmail():
     creds = None
 
-    # Check if token.json exists
+  
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
 
-    # If there are no valid credentials, authenticate the user
+  
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            # Convert expiry to a timezone-naive datetime for comparison
+         
             expiry_naive = creds.expiry.replace(tzinfo=None)
             if _helpers.utcnow() >= expiry_naive:
                 creds.refresh(Request())
@@ -86,7 +86,7 @@ def authenticate_gmail():
             )
             creds = flow.run_local_server(port=8081)
 
-        # Save the credentials for future use
+        
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
