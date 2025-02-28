@@ -12,7 +12,8 @@ import Contact from "./Pages/ContactPage";
 import Calender from "./Pages/Calender";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
-import Dashboard from "./Pages/Dashboard";
+import Dashboard from "./Pages/OrganizerDashboard";
+import AttendeeDashboard from "./Pages/AttendeeDashboard";
 
 const routes = [
   {
@@ -31,7 +32,8 @@ const routes = [
       { path:"/calender", element:<Calender />},
       {path:"/forgot-password", element:<ForgotPassword/>},
       {path:"/reset-password", element:<ResetPassword/>},
-      {path:"/dashboard", element:<Dashboard/>}
+      {path:"/organizer-dashboard", element:<Dashboard/>},
+      {path:"/attendee-dashboard", element:<AttendeeDashboard/>}
     ],
   },
 ];

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import styles from "../Pages/Dashboard.module.css"
 
 function MyEventCard({ name, location, id, time,description,image,date }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -77,14 +78,13 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
   }
 
   return (
-    <div style={{  borderRadius: "10px" }}>
-      <h1>Event Details:</h1>
-      <h2>{name}</h2>
-      <h6>{description}</h6>
-      <h6>{location}</h6>
-      <h6>{date}</h6>
-      <h6>{time}</h6>
-      <img src={image.image} alt="Event" style={{width:"50px"}}  />
+   <article className={styles.projectCard}>
+      <h3 className={styles.projectTitle}>{name}</h3>
+      <p  className={styles.projectDescription}>Description:{description}</p>
+      <h6>Location:{location}</h6>
+      <h6>Date:{date}</h6>
+      <h6>Time:{time}</h6>
+      <img src={image.image} alt="Event" style={{width:"100px"}}  />
       <Link to={`/events/${id}`}>
         <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginBottom: "10px" }}>
           View More Details
@@ -97,7 +97,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
         </button>
       ) : (
         <>
-        <button className=" bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
+        <button className="  bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-70 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
           Edit
         </button>
         <br></br><br></br>
@@ -108,8 +108,8 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
       </button>
 
       {isEditing && (
-       
-          <form style={{maxHeight:"1000px"}}onSubmit={formik.handleSubmit}>
+        
+          <form style={{maxHeight:"1000px",margin:"auto"}}onSubmit={formik.handleSubmit}>
             
               <label htmlFor="eventName">Event Name</label>
               <input
@@ -117,7 +117,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="eventName"
                 name="eventName"
                 autoComplete="off"
-                className="px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className=" w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 value={formik.values.eventName}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -129,7 +129,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 type="text"
                 id="description"
                 name="description"
-                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className="  w-full  border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 autoComplete="off"
                 value={formik.values.description}
                 onChange={formik.handleChange}
@@ -143,7 +143,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="location"
                 name="location"
                 autoComplete="off"
-                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className=" w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 value={formik.values.location}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -171,7 +171,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
                 id="time"
                 name="time"
                 autoComplete="off"
-                className=" px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                className="w-40 px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                 value={formik.values.time}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -209,7 +209,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
           </form>
         
       )}
-    </div>
+    </article>
   );
 }
 

@@ -36,10 +36,11 @@ function Account(){
                 return (<>
                 <EventCard key={index} {...data.event_ticket.event} />
                  <h1 className="account-heading">Tickets bought:</h1>
-                <ul> <li className="account-ticket-info">{data.ticket_quantity} {data.event_ticket.ticket_type}</li></ul>
+               <p className="account-ticket-info">{data.ticket_quantity} {data.event_ticket.ticket_type}</p>
                 </>)
             }
-            return <h1 className="account-ticket-info">{data.ticket_quantity} {data.event_ticket.ticket_type}</h1>
+           
+            return <h6 className="account-ticket-info">{data.ticket_quantity} {data.event_ticket.ticket_type}</h6>
           })}</div>
         </div>
     </>)
