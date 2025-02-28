@@ -51,12 +51,12 @@ const Footer = () => {
               <div className="nav-column">
                 <h3 className="nav-title">TiketiTamasha</h3>
                 <nav className="nav-links">
-                  <a href="#" className="nav-link">
+                  <Link to="/about" className="nav-link">
                     About Us
-                  </a>
-                  <a href="#" className="nav-link">
+                  </Link>
+                  <Link to="/contact" className="nav-link">
                     Contact Us
-                  </a>
+                  </Link>
                 </nav>
               </div>
 
@@ -66,7 +66,9 @@ const Footer = () => {
                   Join our mailing list to stay in the loop with our newest events and concerts.
                 </p>
                 <div className="newsletter-form">
-                  <label htmlFor="email-input" className="sr-only">Email Address</label>
+                  <label htmlFor="email-input" className="sr-only">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     id="email-input"
@@ -78,26 +80,6 @@ const Footer = () => {
                 </div>
               </div>
             </div>
-
-            {/* Contact Component */}
-            {/* <div className="contact-form">
-              <h3 className="nav-title">Contact Us</h3>
-              <input
-                type="email"
-                placeholder="Your Email"
-                className="contact-input"
-              />
-              <input
-                type="text"
-                placeholder="Your Phone Number"
-                className="contact-input"
-              />
-              <textarea
-                placeholder="Your Comment"
-                className="contact-textarea"
-              />
-              <button className="submit-button">Submit</button>
-            </div> */}
           </div>
         </div>
 
