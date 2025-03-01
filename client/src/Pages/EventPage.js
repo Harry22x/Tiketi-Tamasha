@@ -16,7 +16,7 @@ function EventPage() {
   let [onLogin, user,check_session] = useOutletContext();
 
   useEffect(() => {
-    fetch(`/events/${id}`)
+    fetch(`https://tiketi-tamashafrunt.onrender.com/events/${id}`)
       .then((r) => r.json())
       .then((event) => setEvent({ data: event, error: null, status: "resolved" }))
       .catch((err) => setEvent({ data: null, error: err.message, status: "rejected" }));
@@ -69,7 +69,7 @@ function EventPage() {
 
   function createUserTicket() {
     for (let ticket in selectedTickets) {
-      fetch(`/user-tickets`, {
+      fetch(`https://tiketi-tamashafrunt.onrender.com/user-tickets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ function EventPage() {
   }
 
   function getAccessToken() {
-    return fetch("/get-token")
+    return fetch("https://tiketi-tamashafrunt.onrender.com/get-token")
       .then((response) => response.json())
       .then((data) => data.access_token)
       .catch((error) => {
@@ -108,7 +108,7 @@ function EventPage() {
   }
 
   function stkPush() {
-    return fetch("/stk-push", {
+    return fetch("https://tiketi-tamashafrunt.onrender.com/stk-push", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

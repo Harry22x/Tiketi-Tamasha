@@ -17,19 +17,15 @@ import cloudinary
 import cloudinary.api
 
 import cloudinary.uploader
-from cloudinary.utils import cloudinary_url
 from faker import Faker
 from flask_jwt_extended import  create_access_token, jwt_required, get_jwt_identity
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from google.auth import _helpers
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from datetime import timedelta
 from dotenv import load_dotenv
-import google.auth.exceptions
 import pytz
 
 
@@ -41,6 +37,22 @@ from config import app, db, api
 from models import User, UserTicket, Event, EventTicket,UserEvent
 
 # Views go here!
+
+with app.app_context():
+    db.create_all() 
+    print("✅ Database tables created (if not already present)")
+
+
+
+
+if os.getenv("RUN_SEED") == "true":
+    from seed import seed_data  
+
+  
+    with app.app_context():
+        seed_data()
+        print("✅ Seed data inserted successfully.")
+
 
 load_dotenv()
 
@@ -117,7 +129,7 @@ class forgot_password(Resource):
                     identity=str(email),
                     expires_delta=expires
                 )
-                reset_link = f"http://localhost:3000/reset-password?token={token}"
+                reset_link = f"https://euphonious-cupcake-bdec30.netlify.app/reset-password?token={token}"
                 subject = "Tiketi Account Password Reset Request"
                 body = f"""
                     <html>

@@ -8,7 +8,7 @@ function ForgotPassword (){
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response =  await fetch('/forgot-password',{
+            const response =  await fetch('https://tiketi-tamashafrunt.onrender.com/forgot-password',{
                 method:"POST",
                 headers: { "Content-Type": "application/json" },
                  body: JSON.stringify({ email }),

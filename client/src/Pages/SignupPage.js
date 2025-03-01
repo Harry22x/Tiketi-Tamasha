@@ -22,7 +22,7 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await fetch("/signup", {
+      const response = await fetch("https://tiketi-tamashafrunt.onrender.com/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password, role }),

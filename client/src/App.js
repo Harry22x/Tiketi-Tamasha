@@ -11,7 +11,7 @@ function App() {
     try {
       
 
-        const response = await fetch("/check_session", {
+        const response = await fetch("https://tiketi-tamashafrunt.onrender.com/check_session", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,

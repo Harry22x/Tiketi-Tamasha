@@ -10,11 +10,10 @@ from faker import Faker
 
 # Local imports
 from models import db,User, UserTicket, Event, EventTicket,UserEvent
-from app import app
 
-if __name__ == "__main__":
+def seed_data():
     fake = Faker()
-    with app.app_context():
+    with db.session.begin():
         print("Starting seed...")
         print('Deleting data')
         UserTicket.query.delete()

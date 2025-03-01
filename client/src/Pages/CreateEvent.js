@@ -76,7 +76,7 @@ const CreateEvent = () => {
     formData.append("time", eventData.time); 
   
     try {
-        const response = await fetch("/events", {
+        const response = await fetch("https://tiketi-tamashafrunt.onrender.com/events", {
             method: "POST",
             body: formData, 
         })
@@ -94,7 +94,7 @@ const CreateEvent = () => {
 
    function createEventTicket(data){
     for(let ticket in eventData.tickets){
-   try{ const response =  fetch("/event-tickets",{
+   try{ const response =  fetch("https://tiketi-tamashafrunt.onrender.com/event-tickets",{
       method:"POST",
       headers: {
         "Content-Type": "application/json",
@@ -113,7 +113,7 @@ const CreateEvent = () => {
 
   function createUserEvent(data){
 
-    try{ const response = fetch('/user-events',{
+    try{ const response = fetch('https://tiketi-tamashafrunt.onrender.com/user-events',{
       method:"POST",
       headers: {
         "Content-Type": "application/json",

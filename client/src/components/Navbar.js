@@ -5,7 +5,7 @@ function Navbar({setUser,user}) {
 
 
   function handleLogoutClick() {
-    fetch("/logout", { method: "DELETE" }).then((r) => {
+    fetch("https://tiketi-tamashafrunt.onrender.com/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
         setUser(null);
         localStorage.setItem("jwt", null)

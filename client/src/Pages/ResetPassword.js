@@ -17,7 +17,7 @@ const ResetPassword = () => {
             return;
           }
         try {
-            const response =  await fetch('/reset-password', {
+            const response =  await fetch('https://tiketi-tamashafrunt.onrender.com/reset-password', {
             method:"POST",
             headers: { "Content-Type": "application/json",
                      "Authorization": `Bearer ${token}`

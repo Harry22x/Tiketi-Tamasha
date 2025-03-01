@@ -45,7 +45,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
       }
   
       try {
-        const response = await fetch(`/events/${id}`, {
+        const response = await fetch(`https://tiketi-tamashafrunt.onrender.com/events/${id}`, {
           method: "PATCH",
           body: formData, 
         });
@@ -69,7 +69,7 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
     formik.setFieldValue("image", event.currentTarget.files[0]);
   };
   function handleDelete() {
-    fetch(`events/${id}`, {
+    fetch(`https://tiketi-tamashafrunt.onrender.com/events/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
