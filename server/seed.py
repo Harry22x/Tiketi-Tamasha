@@ -16,11 +16,13 @@ def seed_data():
     with db.session.begin():
         print("Starting seed...")
         print('Deleting data')
+        UserEvent.query.delete()
         UserTicket.query.delete()
         EventTicket.query.delete()
+
+       
         Event.query.delete()
         User.query.delete()
-        UserEvent.query.delete()
 
         print("Creating users...")
         users = []
