@@ -32,7 +32,7 @@ function AttendeeDashboard() {
         <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }} className="app-layout">
   
           {/* Your sidebar/dashboard */}
-          <SideBar />
+          <SideBar user={user} />
           
           {/* Main content area */}
          
@@ -40,8 +40,9 @@ function AttendeeDashboard() {
           <main className={styles.container}>
             <section className={styles.projectsSection}>
               <h2 className={styles.sectionTitle}>Your Attending events:</h2>
-              <div className={styles.projectsGrid}>
               {user.user_tickets.length > 0 ? (null):(<h1>This is where your attening events would show but you are currently not attending any</h1>)}
+              <div className={styles.projectsGrid}>
+             
         <div >
           <section  style={{backgroundColor:"#fff",boxShadow:"0 4px 6px #0000001a", borderRadius:"8px"}}>
           {user.user_tickets.map((data, index) => {            

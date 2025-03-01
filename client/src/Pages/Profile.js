@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import "../index.css";
+import styles from "./Dashboard.module.css";
+import SideBar from "../components/SideBar";
 
 export default function ProfilePage() {
   const [onLogin, user, check_session] = useOutletContext();
@@ -108,9 +110,38 @@ export default function ProfilePage() {
       alert("Failed to remove profile picture.");
     }
   };
+  if (!user) {
+    return (
+        <div className="account-loader">
+          <div className="spinner"></div>
+        </div>
+    );
+}
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+    <>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    
+    {/* Create a wrapper container with flexbox */}
+    <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }} className="app-layout">
+
+      {/* Your sidebar/dashboard */}
+      <SideBar user={user} />
+      
+      {/* Main content area */}
+     
+     
+      <main className={styles.container}>
+        <section className={styles.projectsSection}>
+          <h2 className={styles.sectionTitle}>profile Page:</h2>
+          <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-96">
         <h2 className="text-2xl font-bold text-center">Profile Settings</h2>
 
@@ -171,5 +202,17 @@ export default function ProfilePage() {
         </button>
       </div>
     </div>
+        </section>
+
+        <aside className={styles.rightSidebar}>
+          {/* ...announcements and trending sections... */}
+          
+        </aside>
+      </main>
+      
+    
+    </div>
+    
+  </>
   );
 }

@@ -41,14 +41,23 @@ function Navbar({setUser,user}) {
           <a className="nav-link">Calender</a>
           </Link>):(null)}
      
-          {user? (
-             <Link to={`/profile`}> <div className="nav-link">
-             <a  >  
-             Account
-             </a>
-             </div>
-     </Link>
-          ):(
+         
+
+            {user && user.role=="Organizer" ? (
+              <Link to={`/organizer-dashboard`}> <div className="nav-link">
+              <a  >  
+               Dashboard
+              </a>
+              </div>
+              </Link>):(null)}
+             {user && user.role=="Attendee"? (
+              <Link to={`/attendee-dashboard`}> <div className="nav-link">
+              <a  >  
+               Dashboard
+              </a>
+              </div></Link>):(null)}
+
+          {user ? (null):(
                       <Link to = {`/signup`}>
                       <a  className="sign-btn">
                         Sign Up

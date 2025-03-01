@@ -1,66 +1,74 @@
 import React from "react";
 import "./SideBar.css";
+import { Link } from "react-router-dom";
 
-function SideBar() {
+function SideBar({ user }) {
   return (
     <>
-    <div className="dashboard">
-      <div className="sidebar">
-        <div className="logo-container">
-          <i className="ti ti-layout-dashboard logo-icon" />
-          <div className="logo-text">Dashboard</div>
-        </div>
-
-        <div className="nav-items">
-          <div className="nav-item active">
-            <i className="ti ti-home nav-icon" />
-            <div className="nav-text">Home</div>
+      <div className="dashboard">
+        <div className="sidebar">
+          <div className="logo-container">
+            <i className="ti ti-layout-dashboard logo-icon" />
+            <div className="logo-text">Dashboard</div>
           </div>
 
-          <div className="nav-item">
-            <i className="ti ti-user nav-icon" />
-            <div className="nav-text">Profile</div>
+
+
+          <div className="nav-items">
+            {user.role == "Organizer" ? (
+              <Link to={`/organizer-dashboard`}>
+
+                <div className="nav-item ">
+                  <i className="ti ti-home nav-icon" />
+                  <div className="nav-text">Home</div>
+                </div>
+
+              </Link>) : (null)}
+            {user.role == "Attendee" ? (
+              <Link to={`/attendee-dashboard`}>
+                <div className="nav-item ">
+                  <i className="ti ti-home nav-icon" />
+                  <div className="nav-text">Home</div>
+                </div></Link>) : (null)}
+
+              <Link to={`/profile`}>
+            <div className="nav-item">
+              <i className="ti ti-user nav-icon" />
+              <div className="nav-text">Profile</div>
+            </div>
+            </Link>
+
+            {user.role === 'Organizer' ? (
+              <Link to={`/attendee-dashboard`}>
+                <div className="nav-item">
+
+                  <i className="ti ti-clipboard nav-icon" />
+                  <div className="nav-text">Attending events </div>
+                </div></Link>) : (null)}
+
+
+
+
           </div>
 
-          <div className="nav-item">
-            <i className="ti ti-messages nav-icon" />
-            <div className="nav-text">Messages</div>
-          </div>
+          <div className="bottom-nav">
+            <div className="nav-item">
+              <i className="ti ti-settings nav-icon" />
+              <div className="nav-text">Setting</div>
+            </div>
 
-          <div className="nav-item">
-            <i className="ti ti-history nav-icon" />
-            <div className="nav-text">History</div>
-          </div>
+            <div className="nav-item">
+              <i className="ti ti-help nav-icon" />
+              <div className="nav-text">Support</div>
+            </div>
 
-          <div className="nav-item">
-            <i className="ti ti-clipboard nav-icon" />
-            <div className="nav-text">Tasks</div>
-          </div>
-
-          <div className="nav-item">
-            <i className="ti ti-users nav-icon" />
-            <div className="nav-text">Communities</div>
-          </div>
-        </div>
-
-        <div className="bottom-nav">
-          <div className="nav-item">
-            <i className="ti ti-settings nav-icon" />
-            <div className="nav-text">Setting</div>
-          </div>
-
-          <div className="nav-item">
-            <i className="ti ti-help nav-icon" />
-            <div className="nav-text">Support</div>
-          </div>
-
-          <div className="nav-item">
-            <i className="ti ti-shield-lock nav-icon" />
-            <div className="nav-text">Privacy</div>
+            <div className="nav-item">
+              <i className="ti ti-shield-lock nav-icon" />
+              <div className="nav-text">Privacy</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

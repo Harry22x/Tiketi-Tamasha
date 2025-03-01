@@ -66,25 +66,18 @@ function Dashboard() {
           rel="stylesheet"
         />
         
-        {/* Create a wrapper container with flexbox */}
+        
         <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }} className="app-layout">
   
-          {/* Your sidebar/dashboard */}
-          <SideBar />
-          
-          {/* Main content area */}
-         
-         
+          <SideBar user={user} />
+                                  
           <main className={styles.container}>
             <section className={styles.projectsSection}>
               <h2 className={styles.sectionTitle}>Your Events</h2>
+              {user.user_events.length > 0 ? (null):(<h1>This is where your hosted events would show but you are currently not hosting any</h1>)}
               <div className={styles.projectsGrid}>
               {user.role == 'Organizer' ? (
             <>
-            
-           
-         
-            {user.user_events.length > 0 ? (null):(<h1>This is where your hosted events would show but you are currently not hosting any</h1>)}
             {user.user_events.map((data) =><MyEventCard key={data.event.id} id={data.event.id} name={data.event.name} description={data.event.description}
              time={data.event.time} image={data.event} date={data.event.date} location={data.event.location}/>)}
             
@@ -95,7 +88,7 @@ function Dashboard() {
             </section>
   
             <aside className={styles.rightSidebar}>
-              {/* ...announcements and trending sections... */}
+              
               
             </aside>
           </main>
