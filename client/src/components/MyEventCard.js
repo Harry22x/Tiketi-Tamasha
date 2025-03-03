@@ -4,12 +4,13 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import styles from "../Pages/Dashboard.module.css"
 
-function MyEventCard({ name, location, id, time,description,image,date }) {
+function MyEventCard({ name, location, id, time,description,image,date,event_tickets }) {
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   let [onLogin, user, check_session] = useOutletContext();
-  
+  let tickets_sold = event_tickets.map(data=>data.user_tickets[0].ticket_quantity)
+  let revenue_generated =event_tickets.map(data=>Number(data.user_tickets[0].ticket_quantity) * Number(data.price))
     
   
   const validationSchema = yup.object().shape({
@@ -53,7 +54,6 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
         if (!response.ok) throw new Error("Failed to update event");
   
         const data = await response.json();
-        //console.log("Update successful:", data);
         setIsEditing(false);
         check_session(localStorage.getItem("jwt")); 
       } catch (error) {
@@ -81,9 +81,9 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
    <article className={styles.projectCard}>
       <h3 className={styles.projectTitle}>{name}</h3>
       <p  className={styles.projectDescription}>Description:{description}</p>
-      <h6>Location:{location}</h6>
-      <h6>Date:{date}</h6>
-      <h6>Time:{time}</h6>
+      <b><p>Location:{location}</p></b>
+     <b><p>Date:{date}</p></b> 
+     <b><p>Time:{time}</p></b> 
       <img src={image.image} alt="Event" style={{width:"100px"}}  />
       <Link to={`/events/${id}`}>
         <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginBottom: "10px" }}>
@@ -106,6 +106,8 @@ function MyEventCard({ name, location, id, time,description,image,date }) {
       <button className=" bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  onClick={handleDelete}>
         Delete
       </button>
+      <b><p>Tickets sold: {tickets_sold.reduce((value,sum)=>sum + value)}</p></b>
+      <b><p>Revenue Generated: KES {revenue_generated.reduce((value,sum)=>sum + value)}</p></b>
 
       {isEditing && (
         

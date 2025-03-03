@@ -5,45 +5,6 @@ import SideBar from "../components/SideBar";
 import MyEventCard from "../components/MyEventCard";
 import { useNavigate,useOutletContext} from "react-router-dom";
 import AddTicket from "./AddTicket";
-const ProjectCard = ({ title, description }) => (
-  <article className={styles.projectCard}>
-    <h3 className={styles.projectTitle}>{title}</h3>
-    <p className={styles.projectDescription}>{description}</p>
-    <div
-      className={styles.cardActions}
-      role="group"
-      aria-label="Project actions"
-    >
-      <button aria-label="Star project" className={`ti ti-star ${styles.i}`} />
-      <button aria-label="Watch project" className={`ti ti-eye ${styles.i}`} />
-      <button
-        aria-label="Share project"
-        className={`ti ti-share ${styles.i}`}
-      />
-    </div>
-  </article>
-);
-
-const AnnouncementItem = ({ title, text }) => (
-  <article className={styles.announcementItem}>
-    <h4 className={styles.announcementTitle}>{title}</h4>
-    <p className={styles.announcementText}>{text}</p>
-  </article>
-);
-
-const TrendingItem = ({ username, projectName }) => (
-  <article className={styles.trendingItem}>
-    <div
-      className={styles.profilePic}
-      role="img"
-      aria-label={`${username}'s profile picture`}
-    />
-    <div className={styles.userInfo}>
-      <h4 className={styles.username}>{username}</h4>
-      <p className={styles.projectName}>{projectName}</p>
-    </div>
-  </article>
-);
 
 function Dashboard() {
     let [onLogin,user] = useOutletContext();
@@ -79,7 +40,7 @@ function Dashboard() {
               {user.role == 'Organizer' ? (
             <>
             {user.user_events.map((data) =><MyEventCard key={data.event.id} id={data.event.id} name={data.event.name} description={data.event.description}
-             time={data.event.time} image={data.event} date={data.event.date} location={data.event.location}/>)}
+             time={data.event.time} image={data.event} date={data.event.date} location={data.event.location} event_tickets={data.event.event_tickets}/>)}
             
             </>
         ):(null)}
