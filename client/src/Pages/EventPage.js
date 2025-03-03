@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useOutletContext } from "react-router-dom";
 import "./EventPage.css";
+import "./LoadingAnimation.css"
 
 function EventPage() {
   const { id } = useParams();

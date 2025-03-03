@@ -50,7 +50,7 @@ function AttendeeDashboard() {
          
          if(!used_events.includes(data.event_ticket.event.id)){
                 used_events.push(data.event_ticket.event.id)
-                return (<>
+                return (<div>
 
                 
                 <EventCard key={index} {...data.event_ticket.event} />
@@ -58,7 +58,7 @@ function AttendeeDashboard() {
   
                 <h1  className={styles.projectTitle}>{data.ticket_quantity} {data.event_ticket.ticket_type}</h1>
                 
-                </>)
+                </div>)
             }
             return <h1 className={styles.projectTitle}>{data.ticket_quantity} {data.event_ticket.ticket_type}</h1>
           })}
