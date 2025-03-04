@@ -50,7 +50,7 @@ if __name__ == "__main__":
                 date= fake.date_between(start_date="today", end_date="+60d"),
                 time="10:00 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image1.jpeg?raw=true",
-                location = fake.address()
+                location = "MWENDAS"
             ),
             Event(
                 name="HIP-HOP STREET",
@@ -58,7 +58,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="2:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image2.jpeg?raw=true",
-                location = fake.address()
+                location = "PARIS LOUNGE"
             ),
             Event(
                 name="POETRY & CLAY",
@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="9:00 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image3.jpeg?raw=true",
-                location = fake.address()
+                location = "NAIROBI"
             ),
             Event(
                 name="CHESS WORKSHOP",
@@ -74,7 +74,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="11:30 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image4.jpeg?raw=true",
-                location = fake.address()
+                location = "KIAMBU"
             ),
             Event(
                 name="BACK TO ROCK",
@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="1:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image5.jpeg?raw=true",
-                location = fake.address()
+                location = "NAIROBI STREET KITCHEN"
             ),
             Event(
                 name="TARMAC RACING",
@@ -90,7 +90,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image6.jpeg?raw=true",
-                location = fake.address()
+                location = "NGONG RACECOURSE"
             ),
 
             Event(
@@ -99,7 +99,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event1.jpg?raw=true",
-                location = fake.address()
+                location = "KICC"
             ),
             Event(
                 name="Harambee Starlets",
@@ -107,7 +107,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="3:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event.jpeg?raw=true",
-                location = fake.address()
+                location = "ULINZI SPORTS COMPLEX"
             ),
             Event(
                 name="Taste & Toast Brunch",
@@ -115,7 +115,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="12:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event3.jpeg?raw=true",
-                location = fake.address()
+                location = "UMOJA"
             ),
             Event(
                 name="Fashion Forward",
@@ -123,7 +123,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="6:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event4.jpg?raw=true",
-                location = fake.address()
+                location = "LV PLAZA"
             ),
             Event(
                 name="The meat-Up Fest",
@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event7.jpg?raw=true",
-                location = fake.address()
+                location = "CHOMA HOUSE"
             ),
             Event(
                 name="Meet & Great",
@@ -139,7 +139,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event8.jpg?raw=true",
-                location = fake.address()
+                location = "RUAKA"
             )
 
         ]

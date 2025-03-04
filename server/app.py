@@ -227,6 +227,7 @@ class Events(Resource):
             "date": event.date,
             "time": event.time,
             "image": event.image,
+            "location":event.location
         } for event in Event.query.all()]
         return make_response(events,200)
 
