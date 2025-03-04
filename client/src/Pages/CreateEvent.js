@@ -28,7 +28,7 @@ const CreateEvent = () => {
     const fetchUser = async () => {
       try {
     
-        console.log(user)
+        
         if (user.role !== "Organizer") {
           alert("Access denied! Only organizers can create events.");
           navigate("/");
@@ -87,8 +87,13 @@ const CreateEvent = () => {
           createEventTicket(data)
           createUserEvent(data)
         }
+        else{
+          setError(data.error)
+        }
     } catch (error) {
-        console.error("Upload failed:", error);
+        console.log("Upload failed:", error);
+        
+        setError(`Upload failed:, ${error}`);
     } 
 };
 
@@ -126,7 +131,7 @@ const CreateEvent = () => {
     if(response){
       console.log("ok")
       setUploading(false)
-      navigate(`/events/${data.id}`)
+      navigate(`/organizer-dashboard`)
       check_session(localStorage.getItem("jwt"))
     }
   }

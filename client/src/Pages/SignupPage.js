@@ -39,8 +39,10 @@ const SignupPage = () => {
   
       if (token) {
         localStorage.setItem("jwt", token);  
-        check_session(token);  
-        navigate("/");
+        const userdata = await check_session(token);  
+        await userdata
+
+        userdata.role == "Organizer" ? (navigate('/organizer-dashboard')) :(navigate("/"))
       }
     } catch (err) {
       console.log(err.message);

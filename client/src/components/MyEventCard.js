@@ -3,16 +3,18 @@ import { Link, useOutletContext } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import styles from "../Pages/Dashboard.module.css"
+import './MyEventCard.css'
 
 function MyEventCard({ name, location, id, time,description,image,date,event_tickets }) {
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   let [onLogin, user, check_session] = useOutletContext();
-  let tickets_sold = event_tickets.map(data=>data.user_tickets[0].ticket_quantity)
-  let revenue_generated =event_tickets.map(data=>Number(data.user_tickets[0].ticket_quantity) * Number(data.price))
-    
   
+  let tickets_sold =event_tickets.map(data=>data.user_tickets[0] ? data.user_tickets[0].ticket_quantity:0)
+  let revenue_generated = event_tickets.map(data=> data.user_tickets[0] ?Number(data.user_tickets[0].ticket_quantity) * Number(data.price):0)
+
+ 
   const validationSchema = yup.object().shape({
     eventName: yup.string().required("Event name is required"),
     location: yup.string().required("Location is required"),
@@ -86,24 +88,24 @@ function MyEventCard({ name, location, id, time,description,image,date,event_tic
      <b><p>Time:{time}</p></b> 
       <img src={image.image} alt="Event" style={{width:"100px"}}  />
       <Link to={`/events/${id}`}>
-        <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginBottom: "10px" }}>
+        <button className="form-button"  style={{ marginBottom: "10px" }}>
           View More Details
         </button>
       </Link>
       <br />
       {isEditing ? (
-        <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
+        <button className="form-button"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
           Cancel
         </button>
       ) : (
         <>
-        <button className="  bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-70 transition-all"  style={{ marginRight: "10px" }} onClick={() => setIsEditing(!isEditing)}>
+        <button className="form-button" style={{ marginRight: "10px" }}onClick={() => setIsEditing(!isEditing)}>
           Edit
         </button>
-        <br></br><br></br>
+        
         </>
       )}
-      <button className=" bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  onClick={handleDelete}>
+      <button className="form-button"  onClick={handleDelete}>
         Delete
       </button>
       <b><p>Tickets sold: {tickets_sold.reduce((value,sum)=>sum + value)}</p></b>
@@ -179,7 +181,7 @@ function MyEventCard({ name, location, id, time,description,image,date,event_tic
                 onBlur={formik.handleBlur}
               />
               {formik.touched.time && formik.errors.time && <p>{formik.errors.time}</p>}
-
+              <br></br>
               <label htmlFor="time">image</label>
               <input
                 type="file"
@@ -190,13 +192,14 @@ function MyEventCard({ name, location, id, time,description,image,date,event_tic
                 onChange={handleFileChange}
                 onBlur={formik.handleBlur}
               />
+
               {formik.touched.image && formik.errors.image && <p>{formik.errors.image}</p>}
             
             
             
 
-            
-              <button className=" bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"  variant="fill" color="primary" type="submit">
+              <br></br>
+              <button className="form-button"  variant="fill" color="primary" type="submit">
                 {isLoading ? "Loading..." : "Submit"}
               </button>
             

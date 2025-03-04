@@ -3,12 +3,13 @@ import React from "react";
 import styles from "./Dashboard.module.css";
 import SideBar from "../components/SideBar";
 import MyEventCard from "../components/MyEventCard";
-import { Link,useOutletContext} from "react-router-dom";
+import { Link,useOutletContext,useNavigate} from "react-router-dom";
 import AddTicket from "./AddTicket";
 
 function Dashboard() {
     let [onLogin,user] = useOutletContext();
     let used_events=[];
+    const navigate = useNavigate()
     if (!user) {
         return (
             <div className="account-loader">
@@ -63,7 +64,7 @@ function Dashboard() {
           
         
         </div>
-        
+        {/* {user.role !=="Organizer" ? (navigate(`/`)):(null)} */}
       </>
     );
   }

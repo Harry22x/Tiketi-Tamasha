@@ -122,7 +122,13 @@ class forgot_password(Resource):
                 body = f"""
                     <html>
                         <body>
-                            <p>For Tiketi account {user.username}, click this 
+                         <img
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/f0d53468f8408c53aa2c9f2d0a86e6331b6609ac6744dc41946929048f6b8408?placeholderIfAbsent=true"
+                                    alt="Eventick Logo"
+                                    loading="lazy"
+                                    className="logo-icon"
+                                />
+                             <p>For Tiketi account {user.username}, click this 
                                 <a href="{reset_link}">link</a> 
                                 to reset your password. This link expires in 30 minutes
                             </p>
@@ -137,8 +143,8 @@ class forgot_password(Resource):
                 return make_response({"error": "Email not found"}, 404)
 
         except Exception as e:
-            print(f"Error in forgot_password: {e}")
-            raise  # Re-raise to let Flask handle the 500
+            return make_response({"error":f"Error in forgot_password: {e}"},500)
+            raise  
 
 class reset_password(Resource):
     @jwt_required()
@@ -378,7 +384,7 @@ class Signup(Resource):
             db.session.commit()
                    
             access_token = create_access_token(identity=str(new_user.id), expires_delta=timedelta(days=30)) 
-            return {'access_token': access_token}, 200
+            return {'access_token': access_token}, 201
 
             
         except ValueError as e:
@@ -423,7 +429,7 @@ class CheckSession(Resource):
         user_id = get_jwt_identity()  
         user = User.query.get(user_id)
 
-        if user:
+        if user_id:
             return user.to_dict(), 200
         return {'error': 'Unauthorized'}, 401
 

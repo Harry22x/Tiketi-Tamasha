@@ -1,14 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import './Navbar.css'
 function Navbar({setUser,user}) {
-
+const navigate = useNavigate();
 
   function handleLogoutClick() {
     fetch("/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
         setUser(null);
         localStorage.setItem("jwt", null)
+        navigate("/")
       }
     });
   }
@@ -46,14 +47,14 @@ function Navbar({setUser,user}) {
             {user && user.role=="Organizer" ? (
               <Link to={`/organizer-dashboard`}> <div className="nav-link">
               <a  >  
-               Dashboard
+               Account
               </a>
               </div>
               </Link>):(null)}
              {user && user.role=="Attendee"? (
               <Link to={`/attendee-dashboard`}> <div className="nav-link">
               <a  >  
-               Dashboard
+               Account
               </a>
               </div></Link>):(null)}
 

@@ -17,11 +17,21 @@ function EventPage() {
   let [onLogin, user,check_session] = useOutletContext();
 
   useEffect(() => {
-    fetch(`/events/${id}`)
-      .then((r) => r.json())
-      .then((event) => setEvent({ data: event, error: null, status: "resolved" }))
-      .catch((err) => setEvent({ data: null, error: err.message, status: "rejected" }));
+    getevent()
   }, [id]);
+
+ async function getevent(){
+  try{const response = await fetch(`/events/${id}`)
+  const event = await response.json()
+  if(response.ok){
+    setEvent({ data: event, error: null, status: "resolved" })
+  }}
+ 
+  catch(err){  setEvent({ data: null, error: err.message, status: "rejected" });}
+
+
+ }
+
 
   const handleTicketChange = (id, ticketType, price, change) => {
     setSelectedTickets((prev) => {
@@ -44,6 +54,11 @@ function EventPage() {
 
   async function purchase() {
     setPurchasebtn("Purchasing tickets...")
+    if(!user){
+      setErrors("Please login to purchase tickets.")
+      setPurchasebtn("purchase tickets")
+      return;
+    }
     try {
       const token = await getAccessToken();
       if (token) {
