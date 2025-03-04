@@ -1,8 +1,12 @@
 module.exports = {
   testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  transform: {
+    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+  },
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   moduleNameMapper: {
-    "^react-router-dom$": "<rootDir>/node_modules/react-router-dom",
+    "\\.(css|less|scss|sass)$": "<rootDir>/__mocks__/styleMock.js", // Mock CSS files
+    "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/__mocks__/fileMock.js", // Mock image files
   },
 };
-
-  

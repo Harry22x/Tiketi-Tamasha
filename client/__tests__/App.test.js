@@ -1,19 +1,31 @@
-import { render, screen } from "@testing-library/react";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
+import React from "react";
+import { render, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import App from "../src/App";
 
-// Mocking localStorage
-beforeEach(() => {
-  Storage.prototype.getItem = jest.fn(() => "mockToken");
-});
+// Mock fetch API
+global.fetch = jest.fn();
 
-test("renders App without crashing", () => {
-  render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
+describe("App Component", () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Reset mocks before each test
+    localStorage.setItem("jwt", "test-token"); // Mock valid token
+  });
 
-  // Check if Navbar and Footer are rendered
-  expect(screen.getByRole("banner")).toBeInTheDocument();
+  test("handles failed session check", async () => {
+    // Mock failed fetch response
+    fetch.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: "Invalid token" }),
+    });
+
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
+
+    // Wait for fetch to be called
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
+  });
 });

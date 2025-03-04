@@ -1,22 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import './Navbar.css'
-function Navbar({setUser,user}) {
+import './Navbar.css';
 
-
+function Navbar({ setUser, user }) {
   function handleLogoutClick() {
     fetch("/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
         setUser(null);
-        localStorage.setItem("jwt", null)
+        localStorage.removeItem("jwt"); // ✅ Properly removes token
       }
     });
   }
+
   return (
     <>
-    <header className="header">
-      <Link to = {`/`}>
-        <a  className="logo-link">
+      <header className="header">
+        <Link to="/" className="logo-link">
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/f0d53468f8408c53aa2c9f2d0a86e6331b6609ac6744dc41946929048f6b8408?placeholderIfAbsent=true"
             alt="Eventick Logo"
@@ -27,53 +26,33 @@ function Navbar({setUser,user}) {
             <span className="logo-text-bold">Tiketi</span>
             <span className="logo-text-regular">Tamasha</span>
           </div>
-        </a></Link>
+        </Link>
+
         <nav className="nav">
-          <Link to={`/more-events`}> <div className="nav-link">
-                  <a>  
-                  Tickets
-                  </a>
-                  </div>
-          </Link>
-
+          <Link to="/more-events" className="nav-link">Tickets</Link>
           <Link to="/contact" className="nav-link">Contact</Link>
-          {user? (     <Link to={`/calender`}>
-          <a className="nav-link">Calender</a>
-          </Link>):(null)}
-     
-         
 
-            {user && user.role=="Organizer" ? (
-              <Link to={`/organizer-dashboard`}> <div className="nav-link">
-              <a  >  
-               Dashboard
-              </a>
-              </div>
-              </Link>):(null)}
-             {user && user.role=="Attendee"? (
-              <Link to={`/attendee-dashboard`}> <div className="nav-link">
-              <a  >  
-               Dashboard
-              </a>
-              </div></Link>):(null)}
+          {user && <Link to="/calender" className="nav-link">Calender</Link>}
 
-          {user ? (null):(
-                      <Link to = {`/signup`}>
-                      <a  className="sign-btn">
-                        Sign Up
-                      </a></Link>
+          {user?.role === "Organizer" && (
+            <Link to="/organizer-dashboard" className="nav-link">Dashboard</Link>
           )}
-          {user? (<button className="login-btn" onClick={handleLogoutClick}>Log out</button>):(         <Link to={`/login`}>
-          
-          <a  className="login-btn">
-            Login
-          </a></Link>)}
- 
 
+          {user?.role === "Attendee" && (
+            <Link to="/attendee-dashboard" className="nav-link">Dashboard</Link>
+          )}
+
+          {!user && <Link to="/signup" className="sign-btn">Sign Up</Link>}
+
+          {user ? (
+            <button className="login-btn" onClick={handleLogoutClick}>Log out</button>
+          ) : (
+            <Link to="/login" className="login-btn">Login</Link>
+          )}
         </nav>
       </header>
     </>
-  )
+  );
 }
 
 export default Navbar;
