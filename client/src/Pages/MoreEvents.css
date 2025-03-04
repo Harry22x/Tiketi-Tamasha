@@ -71,18 +71,7 @@
   outline: none;
 }
 
-.search-button {
-  padding: 12px 15px;
-  background: navy;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s;
-}
+
 
 
 .no-results {
