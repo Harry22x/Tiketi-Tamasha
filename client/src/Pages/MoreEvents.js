@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MoreEvents.css";
 import EventCard from "../components/EventCard";
-import { FaSearch } from "react-icons/fa";
 
 const MoreEvents = () => {
   const [events, setEvents] = useState([]);
@@ -13,19 +12,15 @@ const MoreEvents = () => {
       .then((data) => setEvents(data));
   }, []);
 
-  // Function to filter events based on multiple attributes
+  // Function to filter events based on any available card detail
   const filteredEvents = events.filter((event) => {
     const query = searchQuery.toLowerCase();
-    return (
-      event.name.toLowerCase().includes(query) ||
-      event.description.toLowerCase().includes(query) ||
-      event.date.toLowerCase().includes(query) ||
-      event.time.toLowerCase().includes(query)
+    return Object.values(event).some(
+      (value) => typeof value === "string" && value.toLowerCase().includes(query)
     );
   });
 
   const handleSearch = () => {
-    // This function ensures the search happens when the button is clicked.
     console.log("Searching for:", searchQuery);
   };
 
@@ -36,15 +31,12 @@ const MoreEvents = () => {
       <div className="search-container">
         <input
           type="text"
-          placeholder=""
+          placeholder="Search event..."
           className="search-bar"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && handleSearch()}
         />
-        <button className="search-button" onClick={handleSearch}>
-          <FaSearch />
-        </button>
       </div>
 
       <div className="tickets-grid">
@@ -59,3 +51,4 @@ const MoreEvents = () => {
 };
 
 export default MoreEvents;
+

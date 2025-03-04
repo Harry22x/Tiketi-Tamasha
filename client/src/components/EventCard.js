@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+
 const EventCard = ({ id, name, date, time, image }) => (
   
   <Link to={`/events/${id}`}>
