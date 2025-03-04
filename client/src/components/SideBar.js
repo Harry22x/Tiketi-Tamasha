@@ -38,7 +38,7 @@ function SideBar({ user }) {
           </Link>
 
           {user?.role === "Organizer" && (
-            <Link to="/organizer-events">
+            <Link to="/attendee-dashboard">
               <div className="nav-item">
                 <i className="ti ti-clipboard nav-icon" />
                 <div className="nav-text">Attending Events</div>

@@ -92,7 +92,7 @@ function MyEventCard({ name, location, id, time,description,image,date,event_tic
       <h6>Location: {location}</h6>
       <h6>Date: {date}</h6>
       <h6>Time: {time}</h6>
-      <img src={image} alt="Event" style={{ width: "100px" }} />
+      <img src={image.image} alt="Event" style={{ width: "100px" }} />
       <Link to={`/events/${id}`}>
         <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all">
           View More Details
