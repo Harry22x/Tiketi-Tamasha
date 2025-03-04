@@ -5,17 +5,28 @@ import EventCard from "../components/EventCard";
 const MoreEvents = () => {
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/events")
-      .then((r) => r.json())
-      .then((data) => setEvents(data));
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/events");
+        if (!response.ok) throw new Error("Failed to fetch events");
+        const data = await response.json();
+        setEvents(data);
+      } catch (err) {
+        setError("Error loading events. Please try again.");
+        console.error("Fetch error:", err);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
-  // Function to filter events based on any available card detail
+  // Function to filter events based on any available string detail
   const filteredEvents = events.filter((event) => {
     const query = searchQuery.toLowerCase();
-    return Object.values(event).some(
+    return Object.values(event || {}).some(
       (value) => typeof value === "string" && value.toLowerCase().includes(query)
     );
   });
@@ -27,7 +38,7 @@ const MoreEvents = () => {
   return (
     <section className="events-container">
       <h2 className="events-title">Event Tickets</h2>
-      
+
       <div className="search-container">
         <input
           type="text"
@@ -35,9 +46,11 @@ const MoreEvents = () => {
           className="search-bar"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
       </div>
+
+      {error && <p className="error-message">{error}</p>}
 
       <div className="tickets-grid">
         {filteredEvents.length > 0 ? (
@@ -51,4 +64,3 @@ const MoreEvents = () => {
 };
 
 export default MoreEvents;
-

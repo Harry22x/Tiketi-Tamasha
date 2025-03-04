@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import MyEventCard from "../src/components/MyEventCard"; 
+import MyEventCard from "../src/components/MyEventCard";
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
