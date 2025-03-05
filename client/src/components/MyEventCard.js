@@ -14,7 +14,9 @@ function MyEventCard({ name, location, id, time,description,image,date,event_tic
   let tickets_sold =event_tickets.map(data=>data.user_tickets[0] ? data.user_tickets[0].ticket_quantity:0)
   let revenue_generated = event_tickets.map(data=> data.user_tickets[0] ?Number(data.user_tickets[0].ticket_quantity) * Number(data.price):0)
 
- 
+  let remaining_tickets = event_tickets.map(data=>data.available_quantity)
+  
+
   const validationSchema = yup.object().shape({
     eventName: yup.string().required("Event name is required"),
     location: yup.string().required("Location is required"),
@@ -110,6 +112,7 @@ function MyEventCard({ name, location, id, time,description,image,date,event_tic
       </button>
       <b><p>Tickets sold: {tickets_sold.reduce((value,sum)=>sum + value)}</p></b>
       <b><p>Revenue Generated: KES {revenue_generated.reduce((value,sum)=>sum + value)}</p></b>
+      <b><p>Remaining Tickets:  {remaining_tickets.reduce((value,sum)=>sum + value)}</p></b>
 
       {isEditing && (
         

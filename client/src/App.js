@@ -8,6 +8,7 @@ function App() {
 
 
   async function check_session(token) {
+    console.log("Checking session")
     try {
       
 

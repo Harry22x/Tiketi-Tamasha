@@ -23,6 +23,7 @@ function EventPage() {
  async function getevent(){
   try{const response = await fetch(`/events/${id}`)
   const event = await response.json()
+  console.log(event)
   if(response.ok){
     setEvent({ data: event, error: null, status: "resolved" })
   }}
@@ -33,19 +34,21 @@ function EventPage() {
  }
 
 
-  const handleTicketChange = (id, ticketType, price, change) => {
-    setSelectedTickets((prev) => {
-      const updatedTickets = { ...prev };
-      if (updatedTickets[ticketType]) {
-        updatedTickets[ticketType].quantity += change;
-        updatedTickets[ticketType].id = id;
-        if (updatedTickets[ticketType].quantity <= 0) delete updatedTickets[ticketType];
-      } else if (change > 0) {
-        updatedTickets[ticketType] = { quantity: 1, price, id };
-      }
-      return updatedTickets;
-    });
-  };
+ const handleTicketChange = (id, ticketType, price, change) => {
+  setSelectedTickets((prev) => {
+    const updatedTickets = { ...prev };
+    if (updatedTickets[ticketType]) {
+      updatedTickets[ticketType].quantity += change;
+      updatedTickets[ticketType].id = id;
+
+      if (updatedTickets[ticketType].quantity <= 0) delete updatedTickets[ticketType];
+    } else if (change > 0) {
+      updatedTickets[ticketType] = { quantity: 1, price, id };
+    }
+    return updatedTickets;
+  });
+};
+
 
   const totalAmount = Object.values(selectedTickets).reduce(
     (total, ticket) => total + ticket.quantity * parseFloat(ticket.price),
@@ -66,6 +69,7 @@ function EventPage() {
         const result = await stkPush();
         if (result && result.ResponseCode === "0") {
           await createUserTicket();
+          await redeucequantityavailable();
           setErrors(""); 
         } else {
           console.log("STK Push failed:", result);
@@ -82,6 +86,34 @@ function EventPage() {
     setPurchasebtn("Purchase Tikcets")
     check_session(localStorage.getItem("jwt"))
   }
+
+  async function redeucequantityavailable() {
+    for (let ticket in selectedTickets) {
+      try {
+        const response = await fetch(`/event-tickets/${selectedTickets[ticket].id}`);
+        const ticketData = await response.json();
+  
+        if (response.ok) {
+          const newAvailableQuantity = ticketData.available_quantity - selectedTickets[ticket].quantity;
+  
+          await fetch(`/event-tickets/${selectedTickets[ticket].id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              available_quantity: newAvailableQuantity
+            }),
+          });
+        } else {
+          console.error("Failed to fetch ticket data:", ticketData);
+        }
+      } catch (error) {
+        console.error("Error updating ticket quantity:", error);
+      }
+    }
+  }
+
 
   function createUserTicket() {
     for (let ticket in selectedTickets) {
@@ -164,20 +196,26 @@ function EventPage() {
         <div className="tickets-section">
           <h2 className="section-title">Tickets</h2>
           <div className="ticket-list">
-            {(event?.event_tickets || [])
-              .map((ticket) => (
-                <div className="ticket-card" key={ticket.id}>
-                  <div className="ticket-info">
-                    <p className="ticket-type">{ticket.ticket_type}</p>
-                    <p className="ticket-price">{parseFloat(ticket.price).toLocaleString()} KES</p>
-                  </div>
-                  <div className="ticket-actions">
-                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.id, ticket.ticket_type, ticket.price, -1)}>-</button>
-                    <span className="ticket-quantity">{selectedTickets[ticket.ticket_type]?.quantity || 0}</span>
-                    <button className="quantity-btn" onClick={() => handleTicketChange(ticket.id, ticket.ticket_type, ticket.price, 1)}>+</button>
-                  </div>
-                </div>
-              ))}
+          {(event?.event_tickets || []).map((ticket) => (
+  <div className="ticket-card" key={ticket.id}>
+    <div className="ticket-info">
+      <p className="ticket-type">{ticket.ticket_type}</p>
+      <p className="ticket-price">{parseFloat(ticket.price).toLocaleString()} KES</p>
+    </div>
+    <div className="ticket-actions">
+      {ticket.available_quantity < 1 ? (
+        <p className="sold-out">Sold Out</p>
+      ) : (
+        <>
+          <button className="quantity-btn" onClick={() => handleTicketChange(ticket.id, ticket.ticket_type, ticket.price, -1)}>-</button>
+          <span className="ticket-quantity">{selectedTickets[ticket.ticket_type]?.quantity || 0}</span>
+          <button className="quantity-btn" onClick={() => handleTicketChange(ticket.id, ticket.ticket_type, ticket.price, 1)}>+</button>
+        </>
+      )}
+    </div>
+  </div>
+))}
+
           </div>
           <p className="event-description">{event.description}</p>
         </div>

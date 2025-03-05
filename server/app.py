@@ -462,6 +462,26 @@ class HandleUserTickets(Resource):
         db.session.commit()
 
 
+class EventTicketByID(Resource):
+        def patch(self,id):
+            event_ticket = EventTicket.query.filter_by(id=id).first()
+            if event_ticket:
+                content = request.get_json()
+                
+                event_ticket.available_quantity = content['available_quantity']
+                db.session.commit()
+                return make_response(event_ticket.to_dict(),201)
+                
+            else:
+                return make_response({"error":"Event ticket does not exist"},404)
+        def get(self,id):
+            event_ticket = EventTicket.query.filter_by(id=id).first()
+            if event_ticket:
+                return make_response(event_ticket.to_dict(),200)
+            else:
+                return make_response({"error":"Event ticket does not exist"},404)
+
+
 
 api.add_resource(Events,'/events')
 api.add_resource(GetEventByID,'/events/<int:id>')
@@ -476,6 +496,7 @@ api.add_resource(EventTickets,'/event-tickets')
 api.add_resource(UserEvents, '/user-events')
 api.add_resource(forgot_password, '/forgot-password')
 api.add_resource(reset_password,'/reset-password')
+api.add_resource(EventTicketByID,'/event-tickets/<int:id>')
 
 
 

@@ -10,6 +10,7 @@ function Dashboard() {
     let [onLogin,user] = useOutletContext();
     let used_events=[];
     const navigate = useNavigate()
+    
     if (!user) {
         return (
             <div className="account-loader">
