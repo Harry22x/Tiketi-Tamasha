@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="9:00 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image3.jpeg?raw=true",
-                location = "NAIROBI"
+                location = "KIPRO CENTRE"
             ),
             Event(
                 name="CHESS WORKSHOP",
@@ -74,7 +74,7 @@ if __name__ == "__main__":
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="11:30 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image4.jpeg?raw=true",
-                location = "KIAMBU"
+                location = "VILLAGE MARKET"
             ),
             Event(
                 name="BACK TO ROCK",

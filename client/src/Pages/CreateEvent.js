@@ -16,9 +16,7 @@ const CreateEvent = () => {
       vip: { price: "", quantity: "" },
     },
   });
-// const [ticketsData,setTicketsData] = useState({
 
-// })
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
    let [onLogin,user,check_session] = useOutletContext();
@@ -28,7 +26,7 @@ const CreateEvent = () => {
     const fetchUser = async () => {
       try {
     
-        console.log(user)
+        
         if (user.role !== "Organizer") {
           alert("Access denied! Only organizers can create events.");
           navigate("/");
@@ -64,8 +62,7 @@ const CreateEvent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setUploading(true)
-
+    setUploading(true);
 
     const formData = new FormData();
     formData.append("image", eventData.image);
@@ -74,67 +71,69 @@ const CreateEvent = () => {
     formData.append("location", eventData.location);
     formData.append("date", eventData.date);
     formData.append("time", eventData.time); 
-  
+
     try {
         const response = await fetch("/events", {
             method: "POST",
             body: formData, 
-        })
+        });
 
         const data = await response.json();
-        //console.log("Upload successful:", data);
-        if(response.ok){
-          createEventTicket(data)
-          createUserEvent(data)
+        
+        if (response.ok) {
+            await createEventTicket(data); 
+            await createUserEvent(data);    
+        } else {
+            setError(data.error);
         }
     } catch (error) {
-        console.error("Upload failed:", error);
-    } 
+        console.log("Upload failed:", error);
+        setError(`Upload failed: ${error}`);
+    } finally {
+        setUploading(false);
+        await check_session(localStorage.getItem("jwt"));
+        navigate(`/organizer-dashboard`);
+    }
 };
 
-   function createEventTicket(data){
-    for(let ticket in eventData.tickets){
-   try{ const response =  fetch("/event-tickets",{
-      method:"POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        event_id: data.id,
-        ticket_type: ticket,
-        price: Number(eventData.tickets[ticket].price),
-        available_quantity:Number(eventData.tickets[ticket].quantity)
-      })
-    })}
-    catch(error){
-      console.log(error)
-    }
-  }}
 
-  function createUserEvent(data){
-
-    try{ const response = fetch('/user-events',{
-      method:"POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: user.id,
-        event_id: data.id
-      })
-    })
-    if(response){
-      console.log("ok")
-      setUploading(false)
-      navigate(`/events/${data.id}`)
-      check_session(localStorage.getItem("jwt"))
-    }
+async function createEventTicket(data) {
+  for (let ticket in eventData.tickets) {
+      try {
+          await fetch("/event-tickets", {  
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                  event_id: data.id,
+                  ticket_type: ticket,
+                  price: Number(eventData.tickets[ticket].price),
+                  available_quantity: Number(eventData.tickets[ticket].quantity)
+              })
+          });
+      } catch (error) {
+          console.log(error);
+      }
   }
-    catch(error){
-      console.log(error)
-    }
+}
 
+async function createUserEvent(data) {
+  try {
+      await fetch('/user-events', { 
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+              user_id: user.id,
+              event_id: data.id
+          })
+      });
+  } catch (error) {
+      console.log(error);
   }
+}
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pt-20 p-8" style={{ background: "linear-gradient(135deg, #000000 0%, #0f0e3d 100%)" }}>

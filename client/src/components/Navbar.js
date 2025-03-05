@@ -1,14 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar({ setUser, user }) {
+
+  const navigate= useNavigate()
   function handleLogoutClick() {
     fetch("/logout", { method: "DELETE" })
       .then((r) => {
         if (r.ok) {
           setUser(null);
           localStorage.removeItem("jwt");
+          navigate('/')
         } else {
           console.error("Logout failed");
         }
@@ -40,11 +43,11 @@ function Navbar({ setUser, user }) {
         {user && <Link to="/calender" className="nav-link">Calender</Link>}
 
         {userRole === "Organizer" && (
-          <Link to="/organizer-dashboard" className="nav-link">Dashboard</Link>
+          <Link to="/organizer-dashboard" className="nav-link">Account</Link>
         )}
 
         {userRole === "Attendee" && (
-          <Link to="/attendee-dashboard" className="nav-link">Dashboard</Link>
+          <Link to="/attendee-dashboard" className="nav-link">Account</Link>
         )}
 
         {!user && <Link to="/signup" className="sign-btn">Sign Up</Link>}

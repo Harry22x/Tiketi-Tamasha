@@ -7,6 +7,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   async function check_session(token) {
+    console.log("Checking session")
     try {
       console.log("Checking session with token:", token); // Debugging
 

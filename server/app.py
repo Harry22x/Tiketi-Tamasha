@@ -122,7 +122,8 @@ class forgot_password(Resource):
                 body = f"""
                     <html>
                         <body>
-                            <p>For Tiketi account {user.username}, click this 
+                        
+                             <p>For Tiketi account {user.username}, click this 
                                 <a href="{reset_link}">link</a> 
                                 to reset your password. This link expires in 30 minutes
                             </p>
@@ -137,8 +138,8 @@ class forgot_password(Resource):
                 return make_response({"error": "Email not found"}, 404)
 
         except Exception as e:
-            print(f"Error in forgot_password: {e}")
-            raise  # Re-raise to let Flask handle the 500
+            return make_response({"error":f"Error in forgot_password: {e}"},500)
+            raise  
 
 class reset_password(Resource):
     @jwt_required()
@@ -379,7 +380,7 @@ class Signup(Resource):
             db.session.commit()
                    
             access_token = create_access_token(identity=str(new_user.id), expires_delta=timedelta(days=30)) 
-            return {'access_token': access_token}, 200
+            return {'access_token': access_token}, 201
 
             
         except ValueError as e:
@@ -422,9 +423,9 @@ class CheckSession(Resource):
     @jwt_required()  
     def get(self):
         user_id = get_jwt_identity()  
-        user = User.query.get(user_id)
+        user = User.query.filter_by(id=user_id).first()
 
-        if user:
+        if user_id:
             return user.to_dict(), 200
         return {'error': 'Unauthorized'}, 401
 
@@ -457,6 +458,26 @@ class HandleUserTickets(Resource):
         db.session.commit()
 
 
+class EventTicketByID(Resource):
+        def patch(self,id):
+            event_ticket = EventTicket.query.filter_by(id=id).first()
+            if event_ticket:
+                content = request.get_json()
+                
+                event_ticket.available_quantity = content['available_quantity']
+                db.session.commit()
+                return make_response(event_ticket.to_dict(),201)
+                
+            else:
+                return make_response({"error":"Event ticket does not exist"},404)
+        def get(self,id):
+            event_ticket = EventTicket.query.filter_by(id=id).first()
+            if event_ticket:
+                return make_response(event_ticket.to_dict(),200)
+            else:
+                return make_response({"error":"Event ticket does not exist"},404)
+
+
 
 api.add_resource(Events,'/events')
 api.add_resource(GetEventByID,'/events/<int:id>')
@@ -471,6 +492,7 @@ api.add_resource(EventTickets,'/event-tickets')
 api.add_resource(UserEvents, '/user-events')
 api.add_resource(forgot_password, '/forgot-password')
 api.add_resource(reset_password,'/reset-password')
+api.add_resource(EventTicketByID,'/event-tickets/<int:id>')
 
 
 
