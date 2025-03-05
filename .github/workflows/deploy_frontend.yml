@@ -1,0 +1,41 @@
+name: Deploy Frontend to Netlify
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.9.0"  
+
+      - name: Install Dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Run Tests
+        run: |
+          cd client
+          npm test  
+
+      - name: Build Project (if tests pass)
+        if: success()
+        run: |
+          cd client
+          npm run build
+
+      - name: Deploy to Netlify (if build succeeds)
+        if: success()
+        run: |
+          npx netlify deploy --dir=client/build --prod \
+          --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} \
+          --site=${{ secrets.NETLIFY_SITE_ID }}

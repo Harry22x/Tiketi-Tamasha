@@ -26,7 +26,7 @@ const UpcomingEvents = ({ events }) => {
         <div className="flex items-center mb-8">
           <h2 className="text-3xl font-bold text-left w-full">Top Events</h2>
           <div className="flex space-x-6 ml-auto relative">
- 
+     
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

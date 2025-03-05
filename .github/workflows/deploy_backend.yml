@@ -1,0 +1,35 @@
+name: Deploy Backend to Render
+
+on:
+  push:
+    branches:
+      - main  # Runs only when you push to main
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8.13"  # Change if needed
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt  # Adjust path if needed
+
+      - name: Run Tests
+        run: |
+          pytest server/testing/  # Ensure you have tests in `server/tests/`
+      
+      - name: Deploy to Render (if tests pass)
+        if: success()
+        run: |
+          curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          --data '{"clearCache": false}'

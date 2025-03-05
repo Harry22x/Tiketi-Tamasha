@@ -30,8 +30,11 @@ function LoginPage() {
   
       if (token) {
         localStorage.setItem("jwt", token); 
-        check_session(token);  
-        navigate("/");
+        const userdata = await check_session(token);  
+        await userdata
+
+        userdata.role == "Organizer" ? (navigate('/organizer-dashboard')) :(navigate("/"))
+        //navigate("/");
       }
     } catch (error) {
       setError("apiError", { message: error.message });

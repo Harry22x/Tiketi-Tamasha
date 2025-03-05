@@ -7,7 +7,7 @@ import SideBar from "../components/SideBar";
 
 export default function ProfilePage() {
   const [onLogin, user, check_session] = useOutletContext();
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(user);
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,23 +15,7 @@ export default function ProfilePage() {
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
 
-  // 🔹 Fetch user data from backend API
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("https://your-backend.com/api/user", {
-          credentials: "include",
-        });
-        if (!response.ok) throw new Error("Failed to fetch user data.");
-        const data = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error("Fetch User Data Error:", error.message);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  
 
   // 🔹 Update profile (Name & Password)
   const handleUpdateProfile = async () => {
