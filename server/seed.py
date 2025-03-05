@@ -49,7 +49,7 @@ def seed_data():
                 date= fake.date_between(start_date="today", end_date="+60d"),
                 time="10:00 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image1.jpeg?raw=true",
-                location = fake.address()
+                location = "MWENDAS"
             ),
             Event(
                 name="HIP-HOP STREET",
@@ -57,7 +57,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="2:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image2.jpeg?raw=true",
-                location = fake.address()
+                location = "PARIS LOUNGE"
             ),
             Event(
                 name="POETRY & CLAY",
@@ -65,7 +65,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="9:00 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image3.jpeg?raw=true",
-                location = fake.address()
+                location = "KIPRO CENTRE"
             ),
             Event(
                 name="CHESS WORKSHOP",
@@ -73,7 +73,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="11:30 AM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image4.jpeg?raw=true",
-                location = fake.address()
+                location = "VILLAGE MARKET"
             ),
             Event(
                 name="BACK TO ROCK",
@@ -81,7 +81,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="1:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image5.jpeg?raw=true",
-                location = fake.address()
+                location = "NAIROBI STREET KITCHEN"
             ),
             Event(
                 name="TARMAC RACING",
@@ -89,7 +89,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/image6.jpeg?raw=true",
-                location = fake.address()
+                location = "NGONG RACECOURSE"
             ),
 
             Event(
@@ -98,7 +98,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event1.jpg?raw=true",
-                location = fake.address()
+                location = "KICC"
             ),
             Event(
                 name="Harambee Starlets",
@@ -106,7 +106,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="3:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event.jpeg?raw=true",
-                location = fake.address()
+                location = "ULINZI SPORTS COMPLEX"
             ),
             Event(
                 name="Taste & Toast Brunch",
@@ -114,7 +114,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="12:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event3.jpeg?raw=true",
-                location = fake.address()
+                location = "UMOJA"
             ),
             Event(
                 name="Fashion Forward",
@@ -122,7 +122,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="6:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event4.jpg?raw=true",
-                location = fake.address()
+                location = "LV PLAZA"
             ),
             Event(
                 name="The meat-Up Fest",
@@ -130,7 +130,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event7.jpg?raw=true",
-                location = fake.address()
+                location = "CHOMA HOUSE"
             ),
             Event(
                 name="Meet & Great",
@@ -138,7 +138,7 @@ def seed_data():
                 date=fake.date_between(start_date="today", end_date="+60d"),
                 time="4:00 PM",
                 image="https://github.com/Harry22x/Tiketi-Tamasha/blob/stacy-branch/client/src/images/event8.jpg?raw=true",
-                location = fake.address()
+                location = "RUAKA"
             )
 
         ]

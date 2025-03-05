@@ -1,51 +1,56 @@
 import React, { useState, useEffect } from "react";
 import "./MoreEvents.css";
 import EventCard from "../components/EventCard";
-import { FaSearch } from "react-icons/fa";
 
 const MoreEvents = () => {
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("https://tiketi-tamashafrunt.onrender.com/events")
-      .then((r) => r.json())
-      .then((data) => setEvents(data));
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("https://tiketi-tamashafrunt.onrender.com/events");
+        if (!response.ok) throw new Error("Failed to fetch events");
+        const data = await response.json();
+        setEvents(data);
+      } catch (err) {
+        setError("Error loading events. Please try again.");
+        console.error("Fetch error:", err);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
-  // Function to filter events based on multiple attributes
+  // Function to filter events based on any available string detail
   const filteredEvents = events.filter((event) => {
     const query = searchQuery.toLowerCase();
-    return (
-      event.name.toLowerCase().includes(query) ||
-      event.description.toLowerCase().includes(query) ||
-      event.date.toLowerCase().includes(query) ||
-      event.time.toLowerCase().includes(query)
+    return Object.values(event || {}).some(
+      (value) => typeof value === "string" && value.toLowerCase().includes(query)
     );
   });
 
   const handleSearch = () => {
-    // This function ensures the search happens when the button is clicked.
     console.log("Searching for:", searchQuery);
   };
 
   return (
     <section className="events-container">
       <h2 className="events-title">Event Tickets</h2>
-      
+
       <div className="search-container">
         <input
           type="text"
-          placeholder=""
+          placeholder="Search event..."
           className="search-bar"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
-        <button className="search-button" onClick={handleSearch}>
-          <FaSearch />
-        </button>
       </div>
+
+      {error && <p className="error-message">{error}</p>}
 
       <div className="tickets-grid">
         {filteredEvents.length > 0 ? (

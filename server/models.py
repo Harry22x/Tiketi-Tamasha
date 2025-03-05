@@ -93,8 +93,8 @@ class EventTicket(db.Model, SerializerMixin):
 
     @validates('price')
     def validate_price(self, key, price):
-        if price < 0:
-            raise ValueError("Price cannot be negative")
+        if not isinstance(price, int) or price < 0:
+            raise ValueError("Price must be a positive integer.")
         return price
 
     @validates('available_quantity')
