@@ -7,7 +7,6 @@ import SignupPage from "./Pages/SignupPage";
 import ProfilePage from "./Pages/Profile";
 import CreateEvent from "./Pages/CreateEvent";
 import MoreEvents from "./Pages/MoreEvents";
-import Account from "./Pages/Account";
 import Contact from "./Pages/ContactPage";
 import Calender from "./Pages/Calender";
 import ForgotPassword from "./Pages/ForgotPassword";
