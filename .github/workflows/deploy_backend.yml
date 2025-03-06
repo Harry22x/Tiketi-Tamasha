@@ -28,10 +28,13 @@ jobs:
       - name: Deploy to Render (if tests pass)
         if: success()
         run: |
+          JSON_PAYLOAD='{"clearCache": false}'
+          echo "Sending JSON: $JSON_PAYLOAD"
+          
           RESPONSE=$(curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
-            --data '{"clearCache": false}')
-          
+            --data "$JSON_PAYLOAD")
+      
           echo "Render API Response: $RESPONSE"
