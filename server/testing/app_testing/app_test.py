@@ -83,7 +83,7 @@ class TestCheckSession:
             auth = token.json
                     
 
-            response = client.get('/check_session',headers={'Authorization':f'Bearer {auth['access_token']}'})
+            response = client.get('/check_session', headers={'Authorization': f"Bearer {auth['access_token']}"})
             response_json = response.json
             print(response_json)
             assert response_json['id'] == 1

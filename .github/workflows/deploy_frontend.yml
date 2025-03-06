@@ -25,6 +25,7 @@ jobs:
       - name: Run Tests
         run: |
           cd client
+          CI=true
           npm test  
 
       - name: Build Project (if tests pass)

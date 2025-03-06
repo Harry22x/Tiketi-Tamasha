@@ -490,7 +490,15 @@ class EventTicketByID(Resource):
             else:
                 return make_response({"error":"Event ticket does not exist"},404)
 
-
+class UserTicketByID(Resource):
+    def delete(self,id):
+        user_ticket = UserTicket.query.filter_by(id=id).first()
+        if user_ticket:
+            db.session.delete(user_ticket)
+            db.session.commit()
+            return '', 204
+        else:
+            return make_response({"error":"User ticket does not exist"},404)
 
 api.add_resource(Events,'/events')
 api.add_resource(GetEventByID,'/events/<int:id>')
@@ -506,6 +514,7 @@ api.add_resource(UserEvents, '/user-events')
 api.add_resource(forgot_password, '/forgot-password')
 api.add_resource(reset_password,'/reset-password')
 api.add_resource(EventTicketByID,'/event-tickets/<int:id>')
+api.add_resource(UserTicketByID,'/user-tickets/<int:id>')
 
 
 

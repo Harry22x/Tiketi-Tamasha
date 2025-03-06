@@ -6,7 +6,7 @@ import EventCard from "../components/EventCard";
 import { useOutletContext } from "react-router-dom";
 
 function AttendeeDashboard() {
-  let [onLogin, user] = useOutletContext();
+  let [onLogin, user,check_session] = useOutletContext();
   let usedEvents = new Set(); // Use Set to avoid duplicates
 
   if (!user) {
@@ -17,6 +17,20 @@ function AttendeeDashboard() {
     );
   }
 
+  function deleteEvent(id){
+    user.user_tickets.map((data)=>{
+      if(data.event_ticket.event.id === id){
+       fetch(`/user-tickets/${data.id}`,{
+        method:"DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+       })
+       .then(check_session(localStorage.getItem("jwt")));
+      }
+    })
+  }
+  
   return (
     <>
       <link
@@ -51,6 +65,7 @@ function AttendeeDashboard() {
                       return (
                         <div key={index}>
                           <EventCard {...data.event_ticket.event} />
+                          <h1  className={styles.projectTitle}><button className={styles.projectTitle} style={{backgroundColor:"#1D4ED8",color:"white",padding:"10px",borderRadius:"5px"}}onClick={()=>deleteEvent(data.event_ticket.event.id)}>Unattend event</button></h1> 
                           <h1 className={styles.projectTitle}>Tickets Bought:</h1>
                           <h1 className={styles.projectTitle}>
                             {data.ticket_quantity} {data.event_ticket.ticket_type}
