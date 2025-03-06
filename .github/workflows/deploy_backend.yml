@@ -28,12 +28,12 @@ jobs:
       - name: Deploy to Render (if tests pass)
         if: success()
         run: |
-          RESPONSE=$(jq -n --arg clearCache "false" '{clearCache: $clearCache}' | \
-            curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Accept: application/json" \
-            -H "Content-Type: application/json" \
-            --data @-)
-
-          echo "Render API Response: $RESPONSE"
+            RESPONSE=$(jq -n --arg clearCache "do_not_clear" '{clearCache: $clearCache}' | \
+              curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+              -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+              -H "Accept: application/json" \
+              -H "Content-Type: application/json" \
+              --data @-)
+        
+            echo "Render API Response: $RESPONSE"
 
