@@ -66,7 +66,7 @@ function AttendeeDashboard() {
                       return (
                         <div key={index}>
                           <EventCard {...data.event_ticket.event} />
-                          <h1  className={styles.projectTitle}><button className={styles.projectTitle} style={{backgroundColor:"#1D4ED8",color:"white",padding:"10px",borderRadius:"5px"}}onClick={()=>deleteEvent(data.event_ticket.event.id)}>Unattended event</button></h1> 
+                          <h1  className={styles.projectTitle}><button className={styles.projectTitle} style={{backgroundColor:"#1D4ED8",color:"white",padding:"10px",borderRadius:"5px"}}onClick={()=>deleteEvent(data.event_ticket.event.id)}>Unattend event</button></h1> 
                           <h1 className={styles.projectTitle}>Tickets Bought:</h1>  
                          
                           <h1 className={styles.projectTitle}>
