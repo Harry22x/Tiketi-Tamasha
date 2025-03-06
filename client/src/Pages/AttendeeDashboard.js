@@ -20,7 +20,7 @@ function AttendeeDashboard() {
   function deleteEvent(id){
     user.user_tickets.map((data)=>{
       if(data.event_ticket.event.id === id){
-       fetch(`/user-tickets/${data.id}`,{
+       fetch(`https://tiketi-tamashafrunt.onrender.com/user-tickets/${data.id}`,{
         method:"DELETE",
         headers: {
           "Content-Type": "application/json",
